@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "sensor": {
+      "type": "object",
+      "description": "the sensors to collect state data from",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "YANG telemetry path to collect from",
+          "minLength": 1,
+          "examples": ["Cisco-IOS-XR-pfi-im-cmd-oper:interfaces/interface-xr/interface/state"],
+          "usage": "The sensor path to poll the telemetry data"
+        },
+        "cadence": {
+          "type": "number",
+          "description": "milliseconds between telemetry stream points",
+	        "minimum": 60000,
+          "examples": [60000],
+          "usage": "Time between telemetry stream points in milliseconds"
+        }
+      },
+      "required": ["path", "cadence"]
+    }
+  },
+  "id": "crosswork/nca/v1/playbooks/router_op_state_snapshot/specs",
+  "title": "Router op State Snapshot",
+  "properties": {
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    },
+    "sensors": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/sensor" },
+      "description": "state definition used to construct state snapshots from",
+      "default": [
+        {
+          "cadence": 60000,
+          "path": ""
+        }
+      ],
+      "uniqueItems": true,
+      "minItems": 1
+    }
+  },
+  "required": ["sensors"],
+  "type": "object"
+}

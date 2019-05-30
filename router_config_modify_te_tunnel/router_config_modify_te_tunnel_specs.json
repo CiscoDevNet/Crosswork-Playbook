@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_modify_te_tunnel/specs",
+  "title": "Router config Modify TE Tunnel",
+  "properties": {
+    "tunnel_id": {
+      "description": "Tunnel ID for the tunnel to be modified",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "examples": [22],
+      "usage": "Tunnel with this id will be modified"
+    },
+    "setup_priority": {
+      "description": "Setup Priority to be set",
+      "type": "integer",
+      "default": 7,
+      "minimum": 0,
+      "maximum": 7,
+      "examples":[7],
+      "usage":"Setup priority of tunnel will be modified to the value specified"
+    },
+    "hold_priority": {
+      "description": "Hold Priority to be set",
+      "type": "integer",
+      "default": 7,
+      "minimum": 0,
+      "maximum": 7,
+      "examples": [7],
+      "usage": "Hold priority of tunnel will be modified to the value specified"
+      
+    },
+    "fast_reroute": {
+      "description": "Enable or disable Fast Reroute",
+      "type": "boolean",
+      "default": true,
+      "examples": [true, false],
+      "usage": "FRR of tunnel will be set (true) or unset (false)"
+    },
+    "bandwidth": {
+      "description": "Bandwidth to be set in kbps",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295,
+      "examples":[10],
+      "usage":"Bandwidth of the tunnel will be set to the value specified"
+      
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["provider", "tunnel_id"],
+  "type": "object"
+}

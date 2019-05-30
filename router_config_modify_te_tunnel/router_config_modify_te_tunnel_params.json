@@ -1,0 +1,16 @@
+{
+	"hosts": "RouterSFO",
+	"tunnel_id": 23,
+
+	"fast_reroute": true,
+	
+	"setup_priority": 7,
+	"hold_priority": 7,
+	
+	"bandwidth": 10,
+
+	"provider": "Netconf",
+	"execution_id": "1",
+	"mop_id": "1",
+	"check_mode": "no"
+}

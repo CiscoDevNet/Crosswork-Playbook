@@ -1,0 +1,72 @@
+---
+# Playbook to bring the specified routers interface up and configure
+# Revanth N(rnayanav@cisco.com)
+# 29/01/2018
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Bring the interface state to up and configure on routers"
+# "description": "Bring the interface state to up and configure on two XR routers"
+# "pb_params_sample_file_name": "router_config_interface_params.json"
+# "pb_params_spec_file_name": "router_config_interface_specs.json"
+# "long_description": "This playbook lets user to choose two XR routers and one interface each on both the routers. On the chosen set of interfaces, the playbook brings their state to UP and also configures the interfaces with the input given by the user. User can also copy the configuration, except the ip config from existing interface"
+# "sw_platform": "IOS XR"
+# "min_nodes": 2
+# "max_nodes": 2
+#@header_end
+
+#########################################################
+# Continuous pre-checks
+#########################################################
+
+
+#########################################################
+# Maintenance phase
+#########################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Bring the interface state to up and configure on router1
+  hosts: "{{ rtr1_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on router1"
+    - interface: "{{ rtr1_interface }}"
+    - interface_config: "{{ rtr1_interface_config }}"
+    - create_interface: false
+  roles:
+    - { role: router_config_interface,  tags: ["maintenance"] }
+
+
+- name: Bring the interface state to up and configure on router2
+  hosts: "{{ rtr2_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on router2"
+    - interface: "{{ rtr2_interface }}"
+    - interface_config: "{{ rtr2_interface_config }}"
+    - create_interface: false
+  roles:
+    - { role: router_config_interface,  tags: ["maintenance"] }
+
+
+
+...

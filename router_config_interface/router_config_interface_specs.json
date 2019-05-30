@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {
+    "ipv4": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "Ip address."
+            },
+            "mask": {
+              "type": "string",
+              "description": "Subnet mask."
+            },
+            "route_tag": {
+              "type": "integer",
+              "description": "Route tag for the address."
+            }
+          }
+        }
+      }
+    }
+  },
+  "id": "crosswork/nca/v1/playbooks/router_config_interface/specs",
+  "title": "Router config Interface",
+  "properties": {
+    "rtr1_host": {
+      "description": "Router1 device hostname",
+      "type": "string",
+      "minLength":1,
+      "examples": ["RouterFremont"],
+      "usage": "One of the router on which the interface config is to be done"
+    },
+    "rtr1_interface": {
+      "description": "Interface name for router1",
+      "type": "string",
+      "minLength":1,
+      "examples": ["GigabitEthernet0/0/0/3"],
+      "usage": "Name of the interface which needs to be brought up and configured on router 1"
+    },
+    "rtr1_interface_config": {
+      "default": {},
+      "description": "Configuration of the interface to be added on router.",
+      "examples": [{"ipv4":{"address":{"ip":"100.0.1.1", "mask":"255.255.255.0", "route_tag":1}}, "copy_from": "GigabitEthernet0/0/0/4"}],
+      "usage": "The configuration to be added under rtr1_interface of router1_host. copy_from is optional, it should be used if the config has to be copied from some other interface. If so, configuration except ipv4/ipv6 addresses under given interface will be copied.",
+      "properties": {
+        "ipv4": {
+          "description": "ipv4 config of the interface",
+          "$ref": "#/definitions/ipv4"
+        }
+      },
+      "type": "object"
+    },
+    "rtr2_host": {
+      "description": "Router2 device hostname",
+      "type": "string",
+      "minLength":1,
+      "examples": ["RouterSanFrancisco"],
+      "usage": "The other router on which the interface config is done"
+    },
+    "rtr2_interface": {
+      "description": "Interface name for router2",
+      "type": "string",
+      "minLength":1,
+      "examples": ["GigabitEthernet0/0/0/3"],
+      "usage": "Name of the interface which needs to be brought up and configured on router 2"
+    },
+    "rtr2_interface_config": {
+      "default": {},
+      "description": "Configuration of the interface to be added on router.",
+      "examples": [{"ipv4":{"address":{"ip":"100.0.1.2","mask":"255.255.255.0","route_tag":1}},"copy_from": "GigabitEthernet0/0/0/4"}],
+      "usage": "The configuration to be addded under rtr2_interface of router2_host. copy_from is optional, it should be used if the config has to be copied from some other interface. If so, configuration except ipv4/ipv6 addresses under given interface will be copied.",
+      "properties": {
+        "ipv4": {
+          "description": "ipv4 config of the interface",
+          "$ref": "#/definitions/ipv4"
+        }
+      },
+      "type": "object"
+    },
+    "create_interface": {
+      "description": "Should the interface be created on router?",
+      "type": "boolean",
+      "usage": "The create interface should be set to \"true\" for logical and sub-interfaces",
+      "examples": [true, false]
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider",
+    "rtr1_interface",
+    "rtr1_host",
+    "rtr2_host",
+    "rtr2_interface_config",
+    "rtr1_interface_config",
+    "rtr2_interface",
+    "create_interface"
+  ],
+  "type": "object"
+}

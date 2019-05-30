@@ -1,0 +1,50 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "additionalProperties": true,
+    "definitions": {},
+    "id": "crosswork/nca/v1/playbooks/router_config_route_policy/specs",
+    "properties": {
+        "rp_name": {
+            "description": "Name of the route policy to be created/deleted",
+            "type": "string",
+            "minLength": 1,
+            "examples":["rtpolicy"],
+            "usage":"Name of the route policy to be added or removed"
+        },
+        "rp_string": {
+            "description": "Route policy string of the route policy to be created",
+            "type": "string",
+            "examples":["if as-path in ignore_path then drop else pass endif"],
+            "usage":"Route policy configuration"
+        },
+        "operation_route_policy": {
+            "default": "add",
+            "description": "Operation to be performed on the router - add/remove of route policy",
+            "type": "string",
+            "enum": [
+                "add",
+                "remove"
+            ],
+            "examples": ["add", "remove"],
+            "usage":"Route policy operation"
+        },
+        "provider": {
+            "default": "Nso",
+            "description": "Provider to be used to connect to the router",
+            "type": "string",
+            "enum": [
+                "Nso"
+            ]
+        },
+        "mop_timeout": {
+            "default": "1h",
+            "description": "Timeout duration for MoP. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+            "type": "string"
+        }
+    },
+    "required": [
+        "provider",
+        "rp_name"
+    ],
+    "type": "object"
+}

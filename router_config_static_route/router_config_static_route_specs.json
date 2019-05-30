@@ -1,0 +1,115 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"additionalProperties": true,
+	"definitions": {
+		
+	},
+	"id": "robot/morph/v1/playbooks/router_config_static_route/specs",
+	"properties": {
+		"provider": {
+			"default": "Nso",
+			"description": "YDK provider to be used to connect to the router",
+			"type": "string",
+			"enum": [
+				"Nso"
+			]
+		},
+		"operation": {
+			"default": "create",
+			"description": "Operation to be performed on the router either create or delete",
+			"type": "string",
+			"enum": [
+				"create",
+				"delete"
+			],
+			"examples": ["create", "delete"],
+			"usage": "if 'create' then the static route is created, else deleted"
+		},
+		"ip_addresses": {
+			"description": "network mask - destination address to be added to the static route. Map of net and destination address",
+			"additionalItems": true,
+			"default":[
+				{
+				"net": "",
+				"address": "",
+				"description": "",
+				"interface":"",
+				"vlan_id":"",
+				"metric":0,
+				"route_name":""
+				}
+      		],
+			"items": {
+				"additionalProperties": true,
+				"properties": {
+					"net": {
+            			"type": "string",
+						"description": "Destination network in CIDR format. Mandatory for XR and XE devices",
+						"minLength": 1,
+						"examples": ["10.1.1.0/24"]
+					},
+					"address": {
+            			"type": "string",
+						"description": "Next hop router IP, mandatory for XR and XE devices",
+						"minLength": 1,
+						"examples": ["192.168.1.1"]
+					},
+					"description": {
+            			"type": "string",
+            			"description": "Description of route, valid only for XR devices",
+						"examples": ["route to Fremont"]
+					},
+					"interface": {
+            			"type": "string",
+            			"description": "interface on which route is to be configured. Valid only for XE devices. Provide either interface or vland_id",
+						"examples": ["Vlan2404"]
+					},
+					"vlan_id": {
+            			"type": "string",
+            			"description": "vland id on which route is to be configured. Valid only for XE devices Provide either interface or vland_id",
+						"examples": [1404]
+					},
+					"metric": {
+            			"type": "integer",
+            			"description": "Metric of the route. Valid only for XE devices",
+						"examples": [10]
+					},
+					"route_name": {
+            			"type": "string",
+            			"description": "Name of the route, Valid only for XE devices",
+						"examples": ["new primary vlan"]
+					}
+				}
+			},
+			"minItems": 1,
+			"required":["net"],
+			"uniqueItems": true,
+			"type": "array",
+			"examples": [{"net":"10.1.1.0/24", "address":"192.168.1.1", "description":"sample route"}],
+			"usage": "the input is iterated for the list of static routes, the net and address is added into the routes_ip of router"
+		}, 
+		"vrf": {
+			"description": "VRF under which static route needs to be added/removed",
+			"type": "string",
+			"examples": ["green"],
+			"usage": "this field is not a mandatory field, if not provided in the input, the static route is added globally"
+		}, 
+		"address_family": {
+			"description": "Type of Ip address used for static route, valid only for XR devices",
+			"type": "string",
+			"default": "ipv4",
+			"enum": [
+				"ipv4",
+				"ipv6"
+			],
+			"examples": ["ipv4", "ipv6"],
+			"usage": "The field is used to differentiate the ip format for the config. If ipv4 we create the static route under ipv4 address family or else under ipv6."
+		}
+	},
+	"required": [
+		"provider",
+		"ip_addresses",
+		"address_family"
+	],
+	"type": "object"
+}

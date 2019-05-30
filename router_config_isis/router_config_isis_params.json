@@ -1,0 +1,22 @@
+{
+	"hosts": "RouterFremont",
+	"execution_id": "1",
+	"mop_id": "1",
+	"isis_tag": "ibone",
+	"isis_config": {
+		"interface":[{
+			"name":"GigabitEthernet0/0/0/4",
+			"circuit_type":"level_2_only",
+			"point_to_point":true,
+			"address_family":{
+				"ipv4":{
+					"unicast":{
+						"metric":23
+					}
+				}
+			}
+		}]
+	},
+	"provider": "Nso",
+	"check_mode": "no"
+}

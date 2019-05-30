@@ -1,0 +1,11 @@
+{
+  "if_names": [
+    "GigabitEthernet0/0/0/0",
+    "GigabitEthernet0/0/0/1",
+    "GigabitEthernet0/0/0/2"
+  ],
+  "admin_state": "up",
+  "provider": "Nso",
+  "collection_type": "telemetry",
+  "mop_timeout": "1h"
+}

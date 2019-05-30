@@ -1,0 +1,19 @@
+{
+  "rtr1_host": "RouterSFO",
+  "rtr1_interface": "GigabitEthernet0/0/0/3",
+  "rtr1_interface_config": {
+    "ipv4": {
+      "address": { "ip": "100.0.1.1", "mask": "255.255.255.0", "route_tag": 1 }
+    }
+  },
+  "rtr2_host": "RouterMilpitas",
+  "rtr2_interface": "GigabitEthernet0/0/0/4",
+  "rtr2_interface_config": {
+    "ipv4": {
+      "address": { "ip": "100.0.1.2", "mask": "255.255.255.0", "route_tag": 1 }
+    }
+  },
+  "provider": "Nso",
+  "collection_type": "telemetry",
+  "mop_timeout": "1h"
+}

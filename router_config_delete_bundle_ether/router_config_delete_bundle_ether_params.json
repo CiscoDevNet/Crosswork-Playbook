@@ -1,0 +1,14 @@
+{
+	"hosts": "RouterSFO,RouterMilpitas",
+	"execution_id": "1",
+	"mop_id": "1",
+	
+	"rtr1_host": "RouterSFO",
+	"rtr1_bundle_id": 1,
+	"rtr1_interfaces": ["GigabitEthernet0/0/0/3"],
+	"rtr2_host": "RouterMilpitas",
+	"rtr2_bundle_id": 1,
+	"rtr2_interfaces": ["GigabitEthernet0/0/0/3"],
+	"provider": "Netconf",
+	"check_mode": "no"
+}

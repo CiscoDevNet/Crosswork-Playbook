@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_bgp_vrf/specs",
+  "title": "Router config BGP Vrf",
+  "properties": {
+    "bgp_id": {
+      "description": "BGP instance under which VRF is to be added/removed.",
+      "type": "string",
+      "minLength": 1,
+      "examples": [7922],
+      "usage": "The BGP instance under which VRF is to be added/removed"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "vrf_name": {
+      "description": "Name of the VRF.",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["vrf_1"],
+      "usage": "Name of vrf under which RD is to be added/removed."
+    },
+    "operation": {
+      "description": "Operation to be performed",
+      "type": "string",
+      "enum": ["add", "remove"],
+      "default": "add",
+      "examples": ["add", "remove"],
+      "usage": "The operation to perform: add or remove of vrf"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["bgp_id", "provider", "vrf_name"],
+  "type": "object"
+}

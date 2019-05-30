@@ -1,0 +1,9 @@
+{
+	"hosts": "RouterMilpitas",
+	"execution_id": "1",
+	"mop_id": "1",
+	"check_mode": "no",
+	"tar_prefix": "",
+	"show_commands": ["show interfaces", "show version"],
+	"dlm_storage_provider": "syslog_storage"
+}

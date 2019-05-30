@@ -1,0 +1,13 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"execution_id": "1",
+	"mop_id": "1",
+	"method": "overload",
+	"provider": "Netconf",
+	"check_mode": "no",
+	"proc_id": "all",
+	"vrf": "default",
+	"cost_protocol": "isis",
+	"cost_threshold_percent": 0.4,
+	"collection_type": "telemetry"
+}

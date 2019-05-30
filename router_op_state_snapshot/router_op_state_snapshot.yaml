@@ -1,0 +1,76 @@
+---
+# Ansible playbook to capture and diff pre and post node state snapshots.
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Node State Snapshot"
+# "description": "Construct and diff pre and post node state snapshot"
+# "pb_params_sample_file_name": "router_op_state_snapshot_params.json"
+# "pb_params_spec_file_name": "router_op_state_snapshot_specs.json"
+# "long_description": "This playbook is to take a snapshot of devices using the given sensor path and report the difference in contents for a given time period"
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 10
+#@header_end
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Take a pre state snapshot
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - description: Take a pre state snapshot
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - action: pre_snapshot
+    - sensors: "{{ sensors }}"
+
+  roles:
+   - { role: router_op_state_snapshot, tags: ["maintenance"] }
+
+- name: Take a post state snapshot
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - description: Take a post state snapshot
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - action: post_snapshot
+    - sensors: "{{ sensors }}"
+
+  roles:
+   - { role: router_op_state_snapshot, tags: ["maintenance"] }
+
+- name: Take the difference of the pre/post state snapshots
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - description: Take the difference of the pre/post state snapshots
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - action: difference
+    - before: "{{ pre_snapshot | default({}) }}"
+    - after: "{{ post_snapshot | default({}) }}"
+
+  roles:
+   - { role: router_op_state_snapshot, tags: ["maintenance"] }

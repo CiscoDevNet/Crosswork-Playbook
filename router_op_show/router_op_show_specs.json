@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "robot/morph/v1/playbooks/router_op_show/specs",
+  "properties": {
+    "tar_prefix": {
+      "description": "The prefix to use in the tar generated from the 'show' commands run on the specified IOS-XR/XE device(s)",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["bgp"],
+      "usage": "The prefix to be added in the tar file"
+    },
+    "show_commands": {
+      "description": "Set of 'show' commands to run on the specified IOS-XR/XE device(s)",
+      "additionalItems": true,
+      "items": {
+        "description": "A 'show' command to run on the specified  IOS-XR/XE device(s)",
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true,
+      "examples": ["show bgp neighbor", "show bgp sessions"],
+      "usage": "The list of show commands to be polled"
+    },
+    "dlm_storage_provider": {
+      "default": "",
+      "description": "The name of a storage provider configured with DLM to be able to store the generated files.",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["syslog_storage"],
+      "usage": "The server/location to save the polled show commands"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["show_commands", "dlm_storage_provider", "tar_prefix"],
+  "type": "object"
+}

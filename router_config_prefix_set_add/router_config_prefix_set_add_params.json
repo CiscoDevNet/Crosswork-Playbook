@@ -1,0 +1,5 @@
+{
+	"check_mode": "no",
+	"prefix_set_name": "INTERNET",
+	"prefix_set_list": ["49.40.24.0/24","49.40.5.0/24"]
+}

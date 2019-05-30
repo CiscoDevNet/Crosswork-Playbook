@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_traffic_avoidance/specs",
+  "title": "Router op Traffic Avoidance",
+  "properties": {
+    "metric": {
+      "type": "string",
+      "default": "igp",
+      "description": "Optimization metric for path",
+      "enum": ["igp", "te", "delay"],
+      "examples": ["igp", "te", "delay"],
+      "usage": "Traffic optimization method"
+    },
+    "constraint_avoidance": {
+      "description": "Path avoidance constraints",
+      "default": [],
+      "type": "array",
+      "minItems": 1,
+      "additionalItems": true,
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "node": {
+            "description": "Node on which the constraint applies",
+            "type": "string",
+            "examples": ["Node-1"],
+            "usage": "The node on which the congestion is detected"
+          },
+          "interfaces": {
+            "description": "Interface(s) to avoid",
+            "type": "array",
+            "additionalItems": true,
+            "items": {
+              "type": "string",
+              "description": "Interface name"
+            },
+            "examples": ["GigabitEthernet0/0/0/0", "GigabitEthernet0/0/0/1"],
+            "usage": "The specifc interfaces on the  node  where the congestion is detected"
+          }
+        }
+      }
+    },
+    "constraint_latency": {
+      "type": "number",
+      "description": "Constraint: Latency (ms)",
+      "examples": [10]
+    },
+    "wae_network_name": {
+      "description": "The WAE network name",
+      "type": "string",
+      "examples": ["acme-network"],
+      "usage": "The WAE network name"
+    },
+    "wae_provider_name": {
+      "description": "WAE provider name as configured in DLM",
+      "type": "string",
+      "default": "wae",
+      "examples": ["wae"],
+      "usage": "The WAE provider name as configured in DLM"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "wae_provider_name",
+    "wae_network_name",
+    "metric",
+    "constraint_avoidance"
+  ],
+  "type": "object"
+}

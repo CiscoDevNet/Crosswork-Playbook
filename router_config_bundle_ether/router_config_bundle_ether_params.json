@@ -1,0 +1,27 @@
+{
+	"hosts": "RouterSFO,RouterMilpitas",
+	"execution_id": "1",
+	"mop_id": "1",
+	"rtr1_host": "RouterSFO",
+	"rtr1_bundle_id": 1,
+	"rtr1_bundle_ipv4_address": "100.0.10.1",
+	"rtr1_bundle_ipv4_mask": "255.255.255.0",
+	"rtr1_bundle_ipv6_addresses": [
+		{"ip":"2002::15:37","length":80},
+		{"ip":"2405:200:801:200::2fb","length":127}
+	],
+	"rtr1_interfaces": ["GigabitEthernet0/0/0/3"],
+	"rtr2_host": "RouterMilpitas",
+	"rtr2_bundle_id": 1,
+	"rtr2_bundle_ipv4_address": "100.0.10.2",
+	"rtr2_bundle_ipv4_mask": "255.255.255.0",
+	"rtr2_bundle_ipv6_addresses": [
+		{"ip":"2002::15:38","length":80},
+		{"ip":"2405:200:801:200::1fb","length":127}
+	],
+	"rtr2_interfaces": ["GigabitEthernet0/0/0/3"],
+	"bw": 1000000,
+	"provider": "Netconf",
+	"check_mode": "no",
+	"collection_type": "telemetry"
+}

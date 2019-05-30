@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_delete_bgp_neighbors/specs",
+  "title": "Router config Delete BGP Neighbors",
+  "properties": {
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "neighbor_ids": {
+      "description": "list of neighbor ids to be deleted in the router",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "type": "array",
+      "uniqueItems": true,
+      "examples": ["1.1.1.1", "2.2.2.2"],
+      "usage": "List of the neighbors to be deleted."
+    },
+    "bgp_id": {
+      "description": "Bgp instance under which neighbors has to be deleted",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["1"],
+      "usage": "BGP neighbor will be deleted from the bgp instance specified using this parameter."
+    },
+    "vrf": {
+      "description": "Vrf name under which neighbors is to be deleted",
+      "type": "string",
+      "examples": ["green"],
+      "usage": "Name of VRF under which neighbor is to be deleted. Empty string to delete neighbor under BGP"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["provider", "bgp_id", "neighbor_ids"],
+  "type": "object"
+}

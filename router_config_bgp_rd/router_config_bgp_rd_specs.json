@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_bgp_rd/specs",
+  "title": "Router config BGP Router Distinguisher",
+  "properties": {
+    "bgp_id": {
+      "description": "BGP instance under which RD is to be added/removed.",
+      "type": "string",
+      "minLength": 1,
+      "examples": [7922],
+      "usage": "Create/delete of RD will be performed on bgp instance specified using this param"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "route_distinguisher": {
+      "description": "Route distinguisher.",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["65010:0"],
+      "usage": "The RD to be added/removed."
+    },
+    "vrf_name": {
+      "description": "Name of the VRF.",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["green"],
+      "usage": "Name of vrf under which RD is to be added/removed."
+    },
+    "operation": {
+      "description": "Operation to be performed. add/remove",
+      "type": "string",
+      "enum": ["add", "remove"],
+      "default": "add",
+      "examples": ["add", "remove"],
+      "usage": "Operation to be performed on the router - 'add' or 'remove' of RD"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["bgp_id", "route_distinguisher", "provider", "vrf_name"],
+  "type": "object"
+}

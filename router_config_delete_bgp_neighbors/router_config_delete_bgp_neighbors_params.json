@@ -1,0 +1,9 @@
+{
+	"provider": "Nso",
+	"bgp_id": "1",
+	"vrf": "",
+	"neighbor_ids": [
+		"1.1.1.1",
+		"2.2.2.2"
+	]
+}

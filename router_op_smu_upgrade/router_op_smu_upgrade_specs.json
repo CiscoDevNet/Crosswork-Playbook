@@ -1,0 +1,203 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+
+    },
+    "id": "/crosswork/nca/v1/playbooks/router_op_smu_upgrade/specs",
+    "title": "Router op SMU Install/Upgrade",
+    "properties": {
+        "cost_method": {
+            "default": "overload",
+            "description": "Costing method when using isis protocol",
+            "type": "string",
+            "enum": [
+                "overload",
+                "maxLinkMetric"
+            ],
+            "examples": ["overload", "maxLinkMetric"],
+            "usage": "The chosen method to perform cost operation of all the interfaces of the router. For OSPF the cost_method is maxLinkMetric and for ISIS is overload"
+        },
+        "cost_protocol": {
+            "default": "isis",
+            "description": "Protocol used for costing operations",
+            "type": "string",
+            "enum": [
+                "isis",
+                "ospf",
+                "ospfv3"
+            ],
+            "examples": ["isis", "ospf", "ospf3"],
+            "usage": "Cost operation will be performed on the IGP specified using this parameter"
+        },
+        "provider": {
+            "default": "Nso",
+            "description": "Provider to be used to connect to the router for costing operations",
+            "type": "string",
+            "enum": [
+                "Nso"
+            ],
+            "examples": ["Nso"]
+        },
+        "cost_threshold_percent": {
+            "default": 0.7,
+            "description": "Traffic utilization threshold percentage (in decimal format) to check cost process. For example 0.7 means 70%",
+            "type": "number",
+            "examples": [0.7],
+            "usage": "If the parameter is set to 0.7, cost out operation is considered successful if the traffic falls to less than 70% of the previous traffic for all interfaces that are part of the IGP. Similarly, cost in is considered successful if traffic grows to more than 70% of the previous traffic for all interface part of IGP."
+        },
+        "cost_proc_id": {
+            "default": "all",
+            "description": "OSPF process id on which cost operation needs to be performed, when using ospf protocol",
+            "type": "string",
+            "examples": ["test", "0"],
+            "usage": "Process id of the protocol under which the costing operation should be performed."
+        },
+        "cost_vrf": {
+            "default": "default",
+            "description": "VRF on which cost operation needs to be performed, when using ospf protocol",
+            "type": "string",
+            "examples": ["default"]
+        },
+        "if_names": {
+            "default": [],
+            "additionalItems": true,
+            "items": {
+                "description": "Router interfaces which need to be checked for state",
+                "type": "string",
+                "minLength":1
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true,
+            "examples": [["GigabitEthernet0/0/0/0", "GigabitEthernet0/0/0/1", "GigabitEthernet0/0/0/2"]],
+            "usage": "All interfaces specified using this parameter will be monitored for state change"
+        },
+        "packages": {
+            "default": [],
+            "additionalItems": true,
+            "items": {
+                "description": "JSON List of SMU package names to be installed on the router, or a tar containing SMU packages",
+                "type": "string",
+                "minLength":1
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true,
+            "examples": [["xrv9k-iosxr-infra-4.0.0.5-r612.CSCva15023"]],
+            "usage": "These are the names of the packages as seen on router"
+        },
+        "optimize": {
+            "default": false,
+            "description": "Whether or not to optimize the package list.",
+            "type": "boolean",
+            "examples": [true, false],
+            "usage" : "Set this to true to install dependent SMUs. Dependent SMU is the one which requires pre-requisite SMU to be installed before installing this SMU"
+        },
+        "region": {
+            "default": "NODES",
+            "description": "Default region which tracks the location of a node.",
+            "type": "string",
+            "minLength":1
+        },
+        "repository": {
+            "default": {
+                "dlm_credential_profile": "",
+                "type": "",
+                "address": "",
+                "source": "",
+                "destination": "",
+                "vrf": ""
+            },
+            "type": "object",
+            "properties": {
+                "dlm_credential_profile": {
+                    "description": "the name of the tracked/configured credential profile in DLM containing the repositories auth credentials.",
+                    "type": "string",
+                    "minLength": 1,
+                    "examples": ["CSM package repository"],
+                    "usage": "The credential profile added in Crosswork which is used as SMU repository"
+                },
+                "type": {
+                    "description": "The type of repository which holds the pacakge(s) in question.",
+                    "type": "string",
+                    "enum": [
+                        "TFTP",
+                        "FTP",
+                        "SFTP",
+                        "SCP",
+                        "LOCAL"
+                    ],
+                    "examples" : [
+                        "TFTP",
+                        "FTP",
+                        "SFTP",
+                        "SCP",
+                        "LOCAL"
+                    ],
+                    "usage": "The repository type used to store the packages"
+                },
+                "address": {
+                    "description": "The Address where the repository can be reached at. Required if the 'Type' is 'TFTP', 'FTP', 'SFTP', 'SCP'.",
+                    "type": "string",
+                    "minLength": 1,
+                    "examples": ["172.20.80.209"],
+                    "usage": "This is the source IP address of the SMU repository"
+                },
+                "source": {
+                    "description": "The absolute filepath to the server directory hosting the packages. Required if the 'Type' is 'TFTP', 'FTP', 'SFTP', 'SCP', 'LOCAL'.",
+                    "type": "string",
+                    "minLength": 1,
+                    "examples": ["/mnt/cw_ddatafs/robot-nca/pkg_repo/ncs5k/6.2.3"],
+                    "usage": "This is the absolute path of the package from where the SMU will be copied"
+                },
+                "destination": {
+                    "description": "The destination folder where the package(s) should be stored on the device in question. Required If 'Type' is 'SCP'.",
+                    "type": "string",
+                    "minLength": 1,
+                    "examples":["harddisk:"],
+                    "usages": "The destination folder on the device to which the SMU will be copied"
+                },
+                "vrf": {
+                    "default": "",
+                    "description": "the VRF used for FTP or TFTP, if any.",
+                    "type": "string",
+                    "examples" : ["green"],
+                    "usage": "The VRF used for FTP or TFTP, if any"
+                }
+            },
+            "required": [
+                "dlm_credential_profile",
+                "type",
+                "address",
+                "source",
+                "destination"
+            ]
+        },
+        "collection_type": {
+            "default": "telemetry",
+            "description": "Collection type to be used for verfication checks. For Install consistency and Install verify checks, if Telemetry sensor path is not resolved or if SNMP is choosen as collection type, verification will be done using CLI data collection ",
+            "type": "string",
+            "enum": [
+                "telemetry",
+                "snmp"
+            ],
+            "examples": [
+                "telemetry",
+                "snmp"
+            ]
+        },
+        "mop_timeout": {
+            "default": "1h",
+            "description": "Timeout duration for MoP. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+            "type": "string"
+        }
+    },
+    "required": [
+        "packages",
+        "if_names",
+        "region",
+        "optimize",
+        "repository"
+    ],
+    "type": "object"
+}

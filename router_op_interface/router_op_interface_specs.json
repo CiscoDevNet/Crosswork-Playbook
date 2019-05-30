@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "/crosswork/nca/v1/playbooks/router_op_interface/specs",
+  "title": "Router op Interface",
+  "properties": {
+    "admin_state": {
+      "default": "up",
+      "description": "Interface(s)'s final desired admin state",
+      "type": "string",
+      "enum": ["up", "down"],
+      "examples" : ["up", "down"],
+      "usage":"‘up’ configures ‘no shutdown’ and ‘down’ configures ‘shutdown’ on the specified interfaces of the  'if_names' parameter"
+    },
+    "if_names": {
+      "additionalItems": true,
+      "description": "Router interfaces which need to be toggled",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true,
+      "examples" : [[
+        "GigabitEthernet0/0/0/0",
+        "GigabitEthernet0/0/0/1",
+        "GigabitEthernet0/0/0/2"
+        ]],
+      "usage":"All interfaces specified using this parameter will be updated"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "collection_type": {
+      "default": "telemetry",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["telemetry", "snmp"],
+      "examples": ["telemetry", "snmp"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["if_names", "admin_state"],
+  "type": "object"
+}

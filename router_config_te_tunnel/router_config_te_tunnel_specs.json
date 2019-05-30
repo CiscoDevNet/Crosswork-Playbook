@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_te_tunnel/specs",
+  "title": "Router config TE Tunnel",
+  "properties": {
+    "bandwidth": {
+      "default": 0,
+      "description": "Bandwidth in kbps.",
+      "title": "The Bandwidth Schema",
+      "type": "integer",
+      "examples": [10],
+      "usage": "Bandwidth of the tunnel will be set to the value specified"
+    },
+    "rtr1_host": {
+      "description": "Name of the router1.",
+      "type": "string",
+      "minLength":1,
+      "examples": ["RouterMilpitas"],
+      "usage": "Of the two routers that are selected for the playbook, choose one of the router for this parameter"
+    },
+    "rtr1_loopback_ip": {
+      "description": "Loopback IP of router1.",
+      "type": "string",
+      "minLength":1,
+      "examples": ["2.2.2.2"],
+      "usage": "This value is used as destination for tunnel between second router and first router"
+    },
+    "rtr1_rtr2_loopback_id": {
+      "default": 0,
+      "description": "Loopback Id for tunnel between rtr1 and rtr2.",
+      "type": "integer",
+      "examples": [0],
+      "usage": "This will be used to form the tunnel config: ipv4 unnumbered Loopback (id)"
+    },
+    "rtr1_rtr2_path": {
+      "default": [],
+      "description": "Explicit path for tunnel between rtr1 and rtr2.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "minItems":1,
+      "uniqueItems": true,
+      "examples": ["10.1.23.3"],
+      "usage": "This is the path that will be used to configure the ERO on first router"
+    },
+    "rtr1_rtr2_path_name": {
+      "description": "Explicit path name for tunnel between rtr1 and rtr2.",
+      "type": "string",
+      "minLength":1,
+      "examples": ["Mil-SFO"],
+      "usage": "This will be the name of the ERO on first router and will be used to form the tunnel between first router and second router."
+    },
+    "rtr1_rtr2_path_option": {
+      "default": 10,
+      "description": "Path option for tunnel between rtr1 and rtr2.",
+      "type": "integer",
+      "examples": [10],
+      "usage": "This is used to form the command: path-option (preference) explicit name"
+    },
+    "rtr1_rtr2_te_id": {
+      "description": "Tunnel Id for tunnel between rtr1 and rtr2.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "examples": [1],
+      "usage": "Tunnel id for the tunnel between first router and second router"
+    },
+    "rtr2_host": {
+      "description": "Name of the router2.",
+      "type": "string",
+      "minLength":1,
+      "examples": ["RouterSFO"],
+      "usage": "Of the two routers that are selected for the playbook, choose the other router for this parameter"
+    },
+    "rtr2_loopback_ip": {
+      "description": "Loopback IP of router2.",
+      "type": "string",
+      "minLength":1,
+      "examples": ["3.3.3.3"],
+      "usage": "This value is used as destination for tunnel between first router and second router"
+    },
+    "rtr2_rtr1_loopback_id": {
+      "default": 0,
+      "description": "Loopback Id for tunnel between rtr2 and rtr1.",
+      "type": "integer",
+      "examples": [0],
+      "usage": "This will be used to form the tunnel config: ipv4 unnumbered Loopback (id)"
+    },
+    "rtr2_rtr1_path": {
+      "default": [],
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "description": "Explicit path for tunnel between rtr2 and rtr1.",
+      "type": "array",
+      "minItems":1,
+      "uniqueItems": true,
+      "examples": ["10.1.23.4"],
+      "usage": "This is the path that will be used to configure the ERO on second router"
+    },
+    "rtr2_rtr1_path_name": {
+      "description": "Explicit path name for tunnel between rtr2 and rtr1.",
+      "type": "string",
+      "minLength":1,
+      "examples": ["SFO-Mil"],
+      "usage": "This will be the name of the ERO on second router and will be used to form the tunnel between second router and first router."
+    },
+    "rtr2_rtr1_path_option": {
+      "default": 10,
+      "description": "Path option for tunnel between rtr2 and rtr1.",
+      "type": "integer",
+      "examples": [10],
+      "usage": "This is used to form the command: path-option (preference) explicit name"
+    },
+    "rtr2_rtr1_te_id": {
+      "description": "Tunnel id for tunnel between rtr2 and rtr1.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "examples": [1],
+      "usage": "Tunnel id for the tunnel between second router and  first router"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "collection_type": {
+      "default": "telemetry",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["telemetry", "snmp"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "bandwidth",
+    "provider",
+    "rtr1_host",
+    "rtr1_loopback_ip",
+    "rtr1_rtr2_loopback_id",
+    "rtr2_rtr1_path_name",
+    "rtr1_rtr2_path_name",
+    "rtr1_rtr2_path",
+    "rtr1_rtr2_path_option",
+    "rtr1_rtr2_te_id",
+    "rtr2_host",
+    "rtr2_loopback_ip",
+    "rtr2_rtr1_loopback_id",
+    "rtr2_rtr1_path",
+    "rtr2_rtr1_path_option",
+    "rtr2_rtr1_te_id"
+  ],
+  "type": "object"
+}

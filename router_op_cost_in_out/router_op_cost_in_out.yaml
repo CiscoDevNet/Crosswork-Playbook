@@ -1,0 +1,181 @@
+# Ansible playbook to cost in/out a router
+# Nitish (nvashish@cisco.com)
+# 11/04/2016
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Node Cost Out/In"
+# "description": "Node Cost Out/In procedure for an IGP - ISIS/OSPF/OSPFv3"
+# "pb_params_sample_file_name": "router_op_cost_in_out_params.json"
+# "pb_params_spec_file_name": "router_op_cost_in_out_specs.json"
+# "prerequisites": "The process id and the vrf id, if provided in the input parameters, have to be already configured on the router. If not, the playbook fails. \nTraffic should be flowing through the router."
+# "long_description": "This playbook is used to perform ‘cost-out’ operation followed by a ‘cost-in’ operation. <br />The 'cost-out' is the operation to drain out the traffic and the 'cost-in' is vice-versa. <br />The supported IGPs are ISIS, OSPF and OSPFv3. A ‘pause’ of 2 mins is added between the cost operations and a verification is also performed."
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+#########################################################
+# Continuous pre-checks
+#########################################################
+
+- name: Perform continuous checks on the router(s)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tags: ["continuous"]
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: no
+    - unique_id: "as a continuous check"
+    - check: "cost_op_cont"
+
+  roles:
+    - { role: router_check }
+
+- name: Perform continuous checks on the router(s)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tags: ["continuous"]
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: no
+    - unique_id: "as a continuous check"
+    - check: "redundancy"
+
+  roles:
+    - { role: router_check }
+
+
+#########################################################
+# Maintenance
+#########################################################
+
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Get RFC-3339 system timestamp
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  tags:
+    - "maintenance"
+  tasks:
+    - name: Get time of starting collection
+      shell: date +%FT%T.%5NZ
+      register: collection_start_time
+
+- name: Pause
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - collection_type: "{{ collection_type }}"    
+    - pause_time: "{{ 120 if collection_type == 'snmp' else 60 }}"
+    - pause_reason: "continuous checks to collect data points"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: op_pause, tags: ["maintenance"] }
+
+- name: Cost-out operation on the specified router(s)
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - cost_op: out
+    - cost_protocol: "{{ cost_protocol }}"
+    - proc_id: "{{ proc_id }}"
+    - vrf: "{{ vrf }}"
+    - method: "{{ method }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_cost_in_out, tags: ["maintenance"] }
+
+- name: Get RFC-3339 system timestamp
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  tags:
+    - "maintenance"
+  tasks:
+    - name: Get time of cost out
+      shell: date +%FT%T.%5NZ
+      register: cost_out_time
+
+- name: Pause
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - pause_time: 120
+    - pause_reason: "traffic to drain out"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: op_pause, tags: ["maintenance"] }
+
+- name: Get RFC-3339 system timestamp
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  tags:
+    - "maintenance"
+  tasks:
+    - name: Get time before verifying cost out
+      shell: date +%FT%T.%5NZ
+      register: cost_out_check_start_time
+
+- name: Verify cost-out operation on the specified router(s)
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+    - threshold_percentage: "{{ cost_threshold_percent }}"
+    - interfaces: "{{ cost_op_result['affected_interfaces'] if cost_op_result is defined else [] }}"
+    - query_period: "{{ (( cost_out_time.stdout|to_datetime('%Y-%m-%dT%H:%M:%S.%fZ') - collection_start_time.stdout|to_datetime('%Y-%m-%dT%H:%M:%S.%fZ') ).total_seconds()/ 60 ) | round(0,'ceil') | int | string | regex_replace('^(.+)$','\\1m') if cost_out_check_start_time is defined and collection_start_time is defined else '' }}"
+    - offset_time: "{{ (( cost_out_check_start_time.stdout|to_datetime('%Y-%m-%dT%H:%M:%S.%fZ') - collection_start_time.stdout|to_datetime('%Y-%m-%dT%H:%M:%S.%fZ') ).total_seconds()/ 60 ) | round(0,'ceil') | int | string | regex_replace('^(.+)$','\\1m') if cost_out_check_start_time is defined and cost_out_time is defined else '' }}"
+    - source: "astack"
+
+  roles:
+    - { role: router_check_cost_out, tags: ["maintenance"] }
+
+- name: Cost-in operation on the specified router(s)
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - cost_op: in
+    - cost_protocol: "{{ cost_protocol }}"
+    - proc_id: "{{ proc_id }}"
+    - vrf: "{{ vrf }}"
+    - method: "{{ method }}"
+    - check_mode: "{{ check_mode }}"
+    - costout_result: "{{ cost_op_result if cost_op_result is defined else {}}}"
+
+  roles:
+    - { role: router_op_cost_in_out, tags: ["maintenance"] }
+

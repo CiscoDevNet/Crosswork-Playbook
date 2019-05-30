@@ -1,0 +1,11 @@
+{
+	"hosts": "RouterFremont",
+	"execution_id": "1",
+	"mop_id": "1",
+	"provider": "Netconf",
+	"check_mode": "no",
+	"if_names": ["GigabitEthernet0/0/0/1","GigabitEthernet0/0/0/6","GigabitEthernet0/0/0/4"],
+	"cost_protocol": "isis",
+	"cost_threshold_percent": 0.4,
+	"collection_type": "telemetry"
+}

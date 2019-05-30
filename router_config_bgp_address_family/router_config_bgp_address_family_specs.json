@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_bgp_address_family/specs",
+  "title": "Router config BGP Address Family",
+  "properties": {
+    "bgp_id": {
+      "description": "BGP instance",
+      "minLength": 1,
+      "type": "string",
+      "examples": ["7922"],
+      "usage": "Create/delete of address family will be performed on bgp instance specified using this param"
+    },
+    "vrf_name": {
+      "description": "Name of vrf under which address family is to be added/removed.  Empty string for global",
+      "type": "string",
+      "examples": ["green"],
+      "usage": "Name of vrf under which address family is to be added/removed. Empty string for global"
+    },
+    "address_family": {
+      "description": "Type of address family to be added/removed",
+      "type": "string",
+      "enum": ["ipv4", "ipv6", "vpnv4", "vpnv6"],
+      "examples": ["ipv4"],
+      "usage": "The kind of address family to be added/removed.  Available options are \"ipv4\", \"ipv6\", \"vpnv4\" and \"vpnv6\""
+    },
+    "sub_address_family": {
+      "description": "Type of sub address family to be added/removed",
+      "type": "string",
+      "enum": ["unicast", "multicast", "mdt", "rt_filter"],
+      "examples": ["unicast"],
+      "usage": "The kind of sub address family to be added/removed.  Available options are \"unicast\", \"multicast\", \"mdt\", \"rt_filter\""
+    },
+    "operation_address_family": {
+      "default": "add",
+      "description": "Operation to be performed on the router - add or remove of address family",
+      "type": "string",
+      "enum": ["add", "remove"],
+      "examples": ["add", "remove"],
+      "usage": "Operation to be performed on the router - 'add' or 'remove' of address family"
+    },
+    "address_family_config": {
+      "type": "object",
+      "description": "Configuration of the address family to be added on router. If users do not wish to add a certain sub-configuration, they need to delete the key:value pair from the raw JSON above",
+      "properties": {
+        "maximum_paths": {
+          "type": "object",
+          "properties": {
+            "ibgp": {
+              "type": "object",
+              "properties": {
+                "maximum": {
+                  "type": "integer",
+                  "description": "Maximum paths for ibgp.",
+                  "default": 2
+                }
+              }
+            },
+            "ebgp": {
+              "type": "object",
+              "properties": {
+                "maximum": {
+                  "type": "integer",
+                  "description": "Maximum paths for ebgp.",
+                  "default": 2
+                }
+              }
+            }
+          }
+        },
+        "additional_paths": {
+          "type": "object",
+          "properties": {
+            "receive": {
+              "type": "boolean",
+              "description": "Should additional paths be received.",
+              "default": false
+            },
+            "send": {
+              "type": "boolean",
+              "description": "Should additional paths be sent.",
+              "default": false
+            },
+            "selection": {
+              "type": "object",
+              "properties": {
+                "route_policy": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "An existing route policy to use for additional paths.",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "network": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "net": {
+                "type": "string",
+                "description": "The network",
+                "default": ""
+              },
+              "route_policy": {
+                "type": "string",
+                "description": "An existing route policy to use for this network.",
+                "default": ""
+              }
+            }
+          }
+        },
+        "redistribute": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Redistribute subscriber routes. Supported methods are static, connected",
+            "default": ""
+          }
+        },
+        "aggregate_address": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "BGP aggregate ip address.",
+            "default": ""
+          }
+        },
+        "nexthop": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resolution": {
+                "type": "object",
+                "properties": {
+                  "prefix_length": {
+                    "type": "object",
+                    "properties": {
+                      "minimum": {
+                        "type": "integer",
+                        "description": "Minimum prefix-length for nexthop resolution.",
+                        "default": 0
+                      }
+                    }
+                  }
+                }
+              },
+              "trigger_delay": {
+                "type": "object",
+                "properties": {
+                  "non_critical": {
+                    "type": "number"
+                  },
+                  "critical": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "allocate_label": {
+          "type": "object",
+          "properties": {
+            "route_policy": {
+              "type": "string",
+              "description": "Route policy name.",
+              "default": ""
+            },
+            "all": {
+              "type": "boolean",
+              "description": "Whether all nets should be labeled.",
+              "default": false
+            }
+          }
+        }
+      }
+    },
+    "rp_name": {
+      "description": "Name of the route policy to be created",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["rp_net1"],
+      "usage": "A route policy can be created to be used in the address family. The play can delete a route policy as well."
+    },
+    "rp_string": {
+      "description": "Route policy string of the route policy to be created",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["done"],
+      "usage": "Config of the route policy to be added. If operation is not 'add', this parameter is unused."
+    },
+    "operation_route_policy": {
+      "default": "add",
+      "description": "Operation to be performed on the router - add/remove of route policy",
+      "type": "string",
+      "enum": ["add", "remove","NO_ACTION"],
+      "examples": ["add", "remove", "NO_ACTION"],
+      "usage": "Operation to be performed for the route policy."
+    },
+    "configs": {
+      "description": "Config to check on router - route policy and address family",
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "string",
+            "description": "The path of config to verify.",
+            "default": "",
+            "minLength":1
+          },
+          "presence": {
+            "type": "boolean",
+            "description": "Type of verification to be done - presence or absence.",
+            "default": false
+          }
+        }
+      },
+      "exmples" : [{"config":"/router/bgp/bgp_no_instance[id=7922]","presence":true},{"config":"/router/bgp/bgp_no_instance[id=7922]/address_family/ipv4/unicast","presence":false}],
+      "usage": "Example given checks that bgp instance 7922 is configured and there is no ipv4 unicast address family configured under that bgp instance"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider",
+    "bgp_id",
+    "address_family",
+    "sub_address_family",
+    "address_family_config",
+    "rp_name",
+    "rp_string",
+    "operation_address_family",
+    "operation_route_policy"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,54 @@
+---
+# Playbook to add prefix set on the designated router
+
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Prefix Set ADD"
+# "description": "ADD prefix-set to a router or add prefixes to existing prefix-set"
+# "pb_params_sample_file_name": "router_config_prefix_set_add_params.json"
+# "pb_params_spec_file_name": "router_config_prefix_set_add_specs.json"
+# "long_description": "This play book has two functional behaviors. <ol><li> If the prefix set does not exist on the router, it will create the prefix-set and then add the prefixes to the prefix-set created</li><li> If the prefix set already exist on the router, it will merge or replace the given prefixes to the prefix-set definition, based on the selected operation</li></ol>"
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+##############################################################################
+# Pre Maintenance phase
+##############################################################################
+
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Add new or modify existing prefix-set configuration on the router
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on a router"
+
+  roles:
+    - { role: router_config_prefix_set_add, tags: ["maintenance"]}
+
+##############################################################################
+# Post Maintenance phase
+##############################################################################
+
+...

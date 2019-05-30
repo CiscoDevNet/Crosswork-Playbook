@@ -1,0 +1,8 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"execution_id": "1",
+	"mop_id": "1",
+	"provider": "Netconf",
+	"protocol": "ssh",
+	"check_mode": "no"
+}

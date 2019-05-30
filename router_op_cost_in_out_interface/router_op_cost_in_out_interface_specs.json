@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_op_cost_in_out_interface/specs",
+  "title": "Router op interface cost in/out",
+  "properties": {
+    "cost_protocol": {
+      "default": "isis",
+      "description": "Protocol used for costing operations",
+      "type": "string",
+      "enum": ["isis", "ospf", "ospfv3"],
+      "examples": ["isis", "ospf", "ospfv3"],
+      "usage": "Cost operation will be performed for this IGP"
+    },
+    "cost_threshold_percent": {
+      "default": 0.7,
+      "description": "Traffic utilization threshold percentage (in decimal format) to check cost process. For example 0.7 means 70%",
+      "type": "number",
+      "examples": [0.7],
+      "usage": "If the parameter is set to 0.7, cost out operation is considered successful if the traffic falls to less than 70% of the previous traffic on the specified interfaces that is part of the IGP. Similarly, cost in is considered successful if traffic grows to more than 70% of the previous traffic for specified interfaces which are part of IGP."
+    },
+    "if_names": {
+      "description": "List of interfaces on which cost operation is to performed",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "type": "array",
+      "uniqueItems": true,
+      "examples": ["GigabitEthernet0/0/0/1","GigabitEthernet0/0/0/4"],
+      "usage": "Interfaces specified using this parameter will be costed out followed by costed in"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "collection_type": {
+      "default": "telemetry",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["telemetry", "snmp"],
+      "examples": ["telemetry", "snmp"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["cost_threshold_percent", "if_names", "cost_protocol"],
+  "type": "object"
+}

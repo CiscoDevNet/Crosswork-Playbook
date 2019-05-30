@@ -1,0 +1,26 @@
+{
+	"hosts": "RouterFremont",
+	"execution_id": "1",
+	"mop_id": "1",
+	"bgp_id": "1",
+	"vrf_name": "Green",
+	"address_family": "ipv4",
+	"sub_address_family": "unicast",
+	"operation_address_family": "add",
+	"address_family_config": {
+		"maximum_paths":{
+			"ibgp":{"maximum":2},
+			"ebgp":{"maximum":2}
+		},
+		"network":[
+			{"net":"49.44.2.2/32"}
+		],
+		"redistribute":["connected","static"]
+	},
+	"configs": [],
+	"provider": "Nso",
+	"rp_name": "rp_net1",
+	"rp_string": "pass",
+	"operation_route_policy": "add",
+	"check_mode": "no"
+}

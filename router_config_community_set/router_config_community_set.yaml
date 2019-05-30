@@ -1,0 +1,49 @@
+---
+# Playbook that performs create and delete of community set on given router
+# Mokshagna Krishna(rkamuni@cisco.com)
+
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Create/Delete community set on router"
+# "description": "Create/Delete community set on router"
+# "pb_params_sample_file_name": "router_config_community_set_params.json"
+# "pb_params_spec_file_name": "router_config_community_set_specs.json"
+# "long_description": "This playbook creates/deletes a community set on a router"
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+#########################################################
+# Maintenance phase
+#########################################################
+
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Create/Delete a community set on router
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - check_mode: "{{ check_mode }}"
+    - unique_id: "on a router"
+
+  roles:
+    - { role: router_config_community_set,  tags: ["maintenance"] }
+
+...

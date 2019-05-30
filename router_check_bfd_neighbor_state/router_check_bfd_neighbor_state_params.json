@@ -1,0 +1,7 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"bfd_neighbors":[{"if_name":"GigabitEthernet 0/0/0/0", "neighbor_ip":"1.1.1.1"}],
+	"execution_id": "1",
+	"mop_id": "1",
+	"check_mode": "no"
+}

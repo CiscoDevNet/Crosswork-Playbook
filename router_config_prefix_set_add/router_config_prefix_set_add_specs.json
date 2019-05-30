@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_prefix_set_add/specs",
+  "title": "Router config Prefix Set Add",
+  "properties": {
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "prefix_set_name": {
+      "description": "Name of the prefix_set. If the prefix_set does not exist, it will be created",
+      "type": "string",
+      "default": "",
+      "minLength": 1,
+      "maxLength": 255,
+      "examples": ["ABCD"],
+      "usage": "This prefix set is created on the router, if it didn't exist before"
+    },
+    "prefix_set_list": {
+      "description": "List of prefixes to be added to the set.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "uniqueItems": true,
+      "minItems": 1,
+      "examples": ["49.40.24.0/24","49.40.5.0/24"],
+      "usage": "This prefix list is added / merged to the prefix set"
+    },
+    "prefix_set_action": {
+      "default": "merge",
+      "description": "Operation to be performed merge/ replace",
+      "type": "string",
+      "enum": ["merge", "replace"],
+      "examples": ["replace", "merge"],
+      "usage": "merge-mode: for an existing prefix set, by default, the given prefix-list is merged with the existing list. However, this is not inline with the CLI behaviour. in CLI, the prefix set gets redefined. replace-mode: it adds the new fields (new list - existing list) and remove obsolete fields (existing list - new list). the common fields are untouched."
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["prefix_set_name", "prefix_set_list", "prefix_set_action"],
+  "type": "object"
+}

@@ -1,0 +1,10 @@
+{
+	"bgp_id": "7922",
+	"hosts": "RouterFremont",
+	"execution_id": "1",
+	"mop_id": "1",
+	"vrf_name": "green",
+	"operation": "add",
+	"provider": "Nso",
+	"check_mode": "no"
+}

@@ -1,0 +1,13 @@
+{
+  "metric": "igp",
+  "constraint_avoidance": [
+    {
+      "node": "Node-1",
+      "interfaces": ["GigabitEthernet0/0/0/0", "GigabitEthernet0/0/0/1"]
+    }
+  ],
+  "constraint_latency": 10,
+  "wae_network_name": "acme-network",
+  "wae_provider_name": "wae",
+  "mop_timeout": "1h"
+}

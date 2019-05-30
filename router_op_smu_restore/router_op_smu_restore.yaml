@@ -1,0 +1,69 @@
+---
+# Ansible playbook to deactivate and commit an installed package
+# cw-nca-infra (cw-nca-infra@cisco.com)
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Uninstall an optional package or a SMU"
+# "description": "Uninstall an optional package or a SMU on a router."
+# "pb_params_sample_file_name": "router_op_smu_restore_params.json"
+# "pb_params_spec_file_name": "router_op_smu_restore_specs.json"
+# "prerequisites": "The packages being deactivated should already be part of the committed packages on router."
+# "long_description": "This playbook is used to deactivate and commit an installed package on a router.  The process involves deactivating of package(s) on router followed by commit of the package on router.  This will result in total restore of packages to an earlier state"
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+#########################################################
+# Continuous pre-checks
+#########################################################
+
+
+#########################################################
+# Maintenance
+#########################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Deactivate a previously installed package on the specified router(s)
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - action: Deactivate
+    - router_ip: "{{ inventory_hostname }}"
+    - packages: "{{ packages }}"
+    - region: "{{ region }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_install, tags: ["maintenance"] }
+
+- name: Commit a previously deactivated package on the specified router(s)
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - action: Commit
+    - router_ip: "{{ inventory_hostname }}"
+    - packages: "{{ package_change_list | default([]) }}"
+    - region: "{{ region }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_install, tags: ["maintenance"] }
+
+...

@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {},
+    "id": "crosswork/nca/v1/playbooks/router_check_accessibility/specs",
+    "title": "Router Check Accessibility",
+    "properties": {
+        "provider": {
+            "default": "Nso",
+            "description": "Provider to be used to check NETCONF connectivity to the router",
+            "type": "string",
+            "enum": [
+                "Nso"
+            ]
+        },
+        "mop_timeout": {
+            "default": "1h",
+            "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+            "type": "string"
+        }
+    },
+    "required": [
+        "provider"
+    ],
+    "type": "object"
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_ospf_area/specs",
+  "title": "Router config OSPF Area",
+  "properties": {
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"],
+      "examples": ["Nso"],
+      "usage": "'Nso' is used to push netconf requests to NSO which in turn will configure router."
+    },
+    "proc_id": {
+      "description": "OSPF process id under which area has to be added",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["test", "0"],
+      "usage": "Process id of the protocol under which the ospf area has to be created"
+    },
+    "interfaces": {
+      "description": "Interfaces to be added to the newly created area. List of dictionary of interface name, cost",
+      "additionalItems": true,
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "examples" : ["GigabitEthernet0/0/0/5"],
+            "usage": "Name value is the interface name"
+          },
+          "cost": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535,
+            "examples" : [50],
+            "usage": "cost associated with the interface"
+          }
+        },
+        "required":["name"]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true,
+      "examples": [[
+        {
+          "name" : "GigabitEthernet0/0/0/5",
+          "cost" : 50
+        },
+        {
+          "name" : "GigabitEthernet0/0/0/6",
+          "cost" : 50
+        }
+      ]],
+      "usage": "An array of dictionary.  The dictionary has two values : name and cost. Name value is the interface name and cost would be the cost associated with the interface"
+        
+    },
+    "vrf": {
+      "description": "VRF under which interface needs to be added",
+      "type": "string",
+      "default": "default",
+      "examples": "default",
+      "usage" : "Combination of proc_id and vrf will decide the config under which the interface will be added"
+    },
+    "igp": {
+      "description": "IGP under which area is to be created",
+      "type": "string",
+      "enum": ["ospf", "ospfv3"],
+      "examples": ["ospf", "ospfv3"],
+      "usage": "The igp under which the area has to be created"
+    },
+    "area_id": {
+      "description": "Area ID for the new area to be created",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["10", "0.0.0.10"],
+      "usage": "This will be the area id of the new area being created"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["provider", "proc_id", "interfaces", "igp", "area_id"],
+  "type": "object"
+}

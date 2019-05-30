@@ -1,0 +1,71 @@
+---
+# Playbook to configure address family under bgp on the designated router
+
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Configure address family under bgp on the designated router"
+# "description": "Add/remove address family under bgp (global or under a vrf) on the designated router"
+# "pb_params_sample_file_name": "router_config_bgp_address_family_params.json"
+# "pb_params_spec_file_name": "router_config_bgp_address_family_specs.json"
+# "prerequisites": "If the address family is being created under VRF, the corresponding address family should be initialized under BGP.  Example: If ipv4 address family is being created under VRF, the ipv4 and vpnv4 of the parent address families should be present.  If not, the play fails. <br /> If the address family is being deleted, the corresponding address family should be initialized under BGP (or VRF if VRF is specified)."
+# "long_description": "This playbook creates or deletes a BGP address family on a router. If the operation is 'create' and a VRF is specified on a router, the address family is created under the VRF of BGP. If not, the address family is created under BGP. <br />If the operation is delete and a VRF is specified, the address family is deleted under the VRF of BGP. If not, the address family is deleted under BGP.<br />This playbook can be optionally used to create or delete a route policy on router which will be used in subsequent address family configuration. "
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Verify route policy and address family config on router
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+
+  roles:
+      - { role: router_config_check, tags: ["maintenance"] }
+
+- name: Add/remove route policy
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on a router"
+    - operation: "{{ operation_route_policy }}"
+
+  roles:
+      - { role: router_config_route_policy, tags: ["maintenance"] }
+
+- name: Add/remove address family under bgp
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on a router"
+    - operation: "{{ operation_address_family }}"
+
+  roles:
+    - { role: router_config_bgp_address_family, tags: ["maintenance"] }
+...

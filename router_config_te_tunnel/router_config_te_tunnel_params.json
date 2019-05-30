@@ -1,0 +1,27 @@
+{
+	"hosts": "RouterFremont,RouterSFO",
+
+	"rtr1_host": "RouterSFO",
+	"rtr1_loopback_ip": "2.2.2.2",
+	"rtr1_rtr2_loopback_id": 0,
+	"rtr1_rtr2_path_option": 10,
+	"rtr1_rtr2_path_name": "FMT-SFO",
+	"rtr1_rtr2_path": "10.1.23.3",
+	"rtr1_rtr2_te_id": 23,
+
+	"rtr2_host": "RouterSanFrancisco",
+	"rtr2_loopback_ip": "3.3.3.3",
+	"rtr2_rtr1_loopback_id": 0,
+	"rtr2_rtr1_path_option": 10,
+	"rtr2_rtr1_path_name": "SFO-FMT",
+	"rtr2_rtr1_path": "10.1.23.2",
+	"rtr2_rtr1_te_id": 32,
+	
+	"bandwidth": 10,
+
+	"provider": "Netconf",
+	"execution_id": "1",
+	"mop_id": "1",
+	"check_mode": "no",
+	"collection_type": "telemetry"
+}

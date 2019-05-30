@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_isis/specs",
+  "title": "Router config ISIS",
+  "properties": {
+    "isis_tag": {
+      "description": "ISIS tag name",
+      "type": "string",
+      "minLength":1,
+      "examples": ["ibone"],
+      "usage": "This is the ISIS instance id under which the configuration is added.  If this ISIS instance is not present, it is created"
+    },
+    "isis_config": {
+      "default": {},
+      "description": "Config of ISIS to be configured.",
+      "type": "object",
+      "properties": {
+        "net": {
+          "type": "array",
+          "description": "A Network Entity Title (NET) for this process",
+          "minItems": 1,
+          "maxItems": 1,
+          "additionalItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "address_family": {
+          "type": "object",
+          "description": "Enter the IS-IS address-family configuration submode",
+          "properties": {
+            "ipv4": {
+              "type": "object",
+              "properties": {
+                "unicast": {
+                  "type": "object",
+                  "properties": {
+                    "metric": {
+                      "type": "integer",
+                      "description": "Metric value.",
+                      "default": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "interface": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of interface.",
+                "default": ""
+              },
+              "circuit_type": {
+                "type": "string",
+                "description": "Circuit type for interface.",
+                "default": ""
+              },
+              "point_to_point": {
+                "type": "boolean",
+                "description": "Enable point-to-point handling for this interface.",
+                "default": false
+              },
+              "address_family": {
+                "type": "object",
+                "properties": {
+                  "ipv4": {
+                    "type": "object",
+                    "properties": {
+                      "unicast": {
+                        "type": "object",
+                        "properties": {
+                          "metric": {
+                            "type": "integer",
+                            "description": "Metric value.",
+                            "default": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "examples": [{"interface":[{"name":"GigabitEthernet0/0/0/4","circuit_type":"level_2_only","point_to_point":true,"address_family":{"ipv4":{"unicast":{"metric":23}}}}]}],
+      "usage": "The config in the dictionary format which will be added to the router"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["provider", "isis_tag"],
+  "type": "object"
+}

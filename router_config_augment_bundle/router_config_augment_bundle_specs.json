@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_augment_bundle/specs",
+  "title": "Router config Augment Bundle",
+  "properties": {
+    "cost_protocol": {
+      "default": "isis",
+      "description": "Protocol used for costing operations",
+      "type": "string",
+      "enum": ["isis", "ospf"],
+      "examples": ["isis", "ospf"],
+      "usage": "While doing the cost operation on the bundle, this IGP will be used"
+    },
+    "cost_threshold_percent": {
+      "description": "Traffic utilization threshold percentage (in decimal format) to check cost process. For example 0.7 means 70%",
+      "type": "number",
+      "examples": [0.7],
+      "usage": "If the parameter is set to 0.7, cost out operation is considered successful if the traffic falls to less than 70% of the previous traffic on the augmented bundle ethernet interface that is part of the IGP. Similarly, cost in is considered successful if traffic grows to more than 70% of the previous traffic for the augmented bundle ethernet interface which is part of IGP."
+    },
+    "rtr1_host": {
+      "description": "Router1 device hostname.",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["RouterMilpitas"],
+      "usage": "Of the two routers that are selected for the playbook, choose one of the router for this parameter"
+    },
+    "proc_id": {
+      "default": "all",
+      "description": "OSPF process id on which cost operation needs to be performed, when using ospf protocol",
+      "type": "string",
+      "examples": ["test"],
+      "usage": "Applicable if IGP is \"ospf\". Bundle should be part of \"ospf\" instance with this process id"
+    },
+    "rtr2_host": {
+      "description": "Router2 device hostname.",
+      "type": "string",
+      "minLength": 1,
+      "examples" : ["RouterFremont"],
+      "usage": "Of the two routers that are selected for the playbook, choose the other router for this parameter"
+    },
+    "rtr1_interfaces": {
+      "description": "Interface to be added to the bundle on router1",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "type": "array",
+      "uniqueItems": true,
+      "examples": ["GigabitEthernet0/0/0/1", "GigabitEthernet0/0/0/2"],
+      "usage": "Interfaces specified for this parameter will be added to the Bundle ether on the first router"
+    },
+    "rtr2_interfaces": {
+      "description": "Interface to be added to the bundle on router2",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "type": "array",
+      "uniqueItems": true,
+      "examples": ["GigabitEthernet0/0/0/1", "GigabitEthernet0/0/0/2"],
+      "usage": "Interfaces specified for this parameter will be added to the Bundle ether on second router"
+    },
+    "rtr1_bundle_id": {
+      "description": "Bundle Id on router1",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535,
+      "examples": [1],
+      "usage": "On first router, bundle ether with this id will be cost out, capacity augmented by adding interface(s) and then cost in"
+    },
+    "rtr2_bundle_id": {
+      "description": "Bundle Id on router2",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535,
+      "examples": [1],
+      "usage": "On second router, bundle ether with this id will be cost out, capacity augmented by adding interface(s) and then cost in"
+    },
+    "bw": {
+      "description": "Expected bandwidth (in kbps) of bundle post addition of interface",
+      "type": "integer",
+      "examples": [1000000],
+      "usage": "This value is used as a part of post-check operation.  The bandwidth of the bundle should be >= the value specified for this input parameter for the playbook to be verified"
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "collection_type": {
+      "default": "telemetry",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["telemetry", "snmp"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cost_threshold_percent",
+    "rtr1_host",
+    "rtr2_host",
+    "rtr1_interfaces",
+    "rtr2_interfaces",
+    "rtr1_bundle_id",
+    "rtr2_bundle_id",
+    "bw",
+    "cost_protocol",
+    "collection_type",
+    "proc_id"
+  ],
+  "type": "object"
+}

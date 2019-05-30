@@ -1,0 +1,14 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"provider": "Nso",
+	"execution_id": "1",
+	"mop_id": "1",
+	"ip_addresses": [
+		{"net":"10.1.1.0/24","address":"192.168.1.1","description":"sample route"},
+		{"net":"10.1.1.0/24","address":"192.168.1.2","description":"backup route"}
+	],
+	"vrf": "",
+	"operation":"create",
+	"address_Family": "ipv4",
+	"check_mode": "no"
+}

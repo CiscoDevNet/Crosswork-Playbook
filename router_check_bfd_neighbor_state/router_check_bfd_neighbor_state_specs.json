@@ -1,0 +1,45 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"definitions": {
+
+	},
+	"id": "robot/morph/v1/playbooks/router_check_bfd_neighbor_state/specs",
+	"properties": {
+		"bfd_neighbors": {
+			"default": "",
+			"description": "list of bfd neighbors to be verified on the router",
+			"items": {
+                "additionalProperties": true,
+                "properties": {
+                    "if_name": {
+						"type": "string",
+						"description": "interface name",
+						"minLength": 1,
+						"examples":["GigabitEthernet0/0/0"],
+						"usage" : "List of interface names to be checked for BFD neighbor state"
+                    },
+                    "neighbor_ip": {
+						"type": "string",
+						"description": "ip of the neighbor",
+						"minLength": 1,
+						"examples":["1.1.1.1"],
+						"usage" : "List of neighbor IP addresses to be checked for BFD neighbor state"
+                    }
+				},
+				"required":[
+					"if_name",
+					"neighbor_ip"
+				]
+            },
+			"minItems": 1,
+			"uniqueItems": true,
+			"type": "array",
+			"examples" : [[{"if_name":"GigabitEthernet 0/0/0/0", "neighbor_ip":"1.1.1.1"}]],
+			"usage": "List of interface names to be checked for BFD neighbor state, List of neighbor IP addresses to be checked for BFD neighbor state"
+		}
+	},
+	"required": [
+		"bfd_neighbors"
+	],
+	"type": "object"
+}

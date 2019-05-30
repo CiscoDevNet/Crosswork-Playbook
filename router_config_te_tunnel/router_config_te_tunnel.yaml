@@ -1,0 +1,113 @@
+---
+# Playbook to deploy a TE tunnel between designated routers
+# Krishna Somala (skreddy@cisco.com)
+# 10/04/2016
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "TE Tunnel Configuration"
+# "description": "Create a bi directional TE Tunnel along with the EROs between 2 routers"
+# "pb_params_sample_file_name": "router_config_te_tunnel_params.json"
+# "pb_params_spec_file_name": "router_config_te_tunnel_specs.json"
+# "prerequisites": "The playbook expects the IGP, RSVP and MPLS configuration to be already present on the router"
+# "long_description": "This playbook is used to create a TE tunnel pair between two routers. It also creates the (Explicit Route Object) EROs between the two routers"
+# "limitations": "Currently only explicit paths are supported and dynamic paths are not supported."
+# "sw_platform": "IOS XR"
+# "min_nodes": 2
+# "max_nodes": 2
+#@header_end
+
+#########################################################
+# Continuous pre-checks
+#########################################################
+
+- include: router_cont_pre_checks.yml
+
+##############################################################################
+# Maintenance phase-1
+##############################################################################
+
+#NodeLock Task
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+
+# Create first TE tunnel pair
+
+- name: Create a TE Tunnel endpoint on the router Router1, for Router1-Router2 tunnel
+  hosts: "{{ rtr1_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - unique_id: "from Router1-Router2"
+    - router_ip: "{{ inventory_hostname }}"
+    - explicit_path: ["{{ rtr1_rtr2_path }}"]
+    - explicit_path_name: "{{ rtr1_rtr2_path_name }}"
+    - src_host_name: "{{ rtr1_host }}"
+    - dest_host_name: "{{ rtr2_host }}"
+    - tunnel_id: "{{ rtr1_rtr2_te_id }}"
+    - tunnel_dest: "{{ rtr2_loopback_ip }}"
+    - te_lsp_name: "{{ rtr1_host }}-{{ rtr2_host }}"
+    - path_option: "{{ rtr1_rtr2_path_option }}"
+    - loopback_id: "{{ rtr1_rtr2_loopback_id }}"
+    - bandwidth: "{{ bandwidth }}"
+
+  roles:
+    - { role: router_config_te_tunnel, tags: ["maintenance"] }
+
+- name: Create a TE Tunnel endpoint on the router Router2, for Router2-Router1 tunnel
+  hosts: "{{ rtr2_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - unique_id: "from Router2-Router1"
+    - router_ip: "{{ inventory_hostname }}"
+    - explicit_path: ["{{ rtr2_rtr1_path }}"]
+    - explicit_path_name: "{{ rtr2_rtr1_path_name }}"
+    - src_host_name: "{{ rtr2_host }}"
+    - dest_host_name: "{{ rtr1_host }}"
+    - tunnel_id: "{{ rtr2_rtr1_te_id }}"
+    - tunnel_dest: "{{ rtr1_loopback_ip }}"
+    - te_lsp_name: "{{ rtr2_host }}-{{ rtr1_host }}"
+    - path_option: "{{ rtr2_rtr1_path_option }}"
+    - loopback_id: "{{ rtr2_rtr1_loopback_id }}"
+    - bandwidth: "{{ bandwidth }}"
+
+  roles:
+    - { role: router_config_te_tunnel, tags: ["maintenance"] }
+
+
+##############################################################################
+# Post-check phase-1
+##############################################################################
+
+# Check tunnel interface
+
+- name: Check tunnel interface on Router1 after creating TE tunnel
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - unique_id: "between Router1-Router2"
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ rtr1_host }}"
+    - if_name: "tunnel-te{{ rtr1_rtr2_te_id }}"
+    - check: "tunnel_interface"
+
+  roles:
+    - { role: router_check, tags: ["post_maintenance"] }
+
+...

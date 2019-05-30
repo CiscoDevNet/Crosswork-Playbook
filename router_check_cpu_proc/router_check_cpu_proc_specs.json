@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "robot/morph/v1/playbooks/router_check_cpu_proc/specs",
+  "properties": {
+    "collection_type": {
+      "default": "snmp",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["snmp"],
+      "examples": ["snmp"]
+    },
+    "cpu_threshold_percentage": {
+      "description": "CPU threshold percentage",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 100,
+      "examples" : [10],
+      "usage":"The accepted CPU usage, if its above then the play book would fail"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["cpu_threshold_percentage"],
+  "type": "object"
+}

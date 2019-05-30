@@ -1,0 +1,11 @@
+{
+	"hosts": "RouterSFO",
+	"execution_id": "1",
+	"mop_id": "1",
+	"set_id": "1",
+	"community_numbers":["internet","567:234","56:346"],
+	"operation":"create",
+	"create_action":"",
+	"provider": "Nso",
+	"check_mode": "no"
+}

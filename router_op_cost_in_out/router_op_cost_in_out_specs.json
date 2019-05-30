@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "/crosswork/nca/v1/playbooks/router_op_cost_in_out/specs",
+  "title": "Router op cost in/out",
+  "properties": {
+    "cost_protocol": {
+      "default": "isis",
+      "description": "Protocol used for costing operations",
+      "type": "string",
+      "enum": ["isis", "ospf", "ospfv3"],
+      "examples": ["isis", "ospf", "ospfv3"],
+      "usage": "Cost operation will be performed for this IGP"
+    },
+    "cost_threshold_percent": {
+      "description": "Traffic utilization threshold percentage (in decimal format) to check cost process. For example 0.7 means 70%",
+      "type": "number",
+      "examples": [0.7],
+      "usage": "If the parameter is set to 0.7, cost out operation is considered successful if the traffic falls to less than 70% of the previous traffic for all interface that is part of the IGP.  Similarly, cost in is considered successful if traffic grows to more than 70% of the previous traffic for all interface part of IGP."
+    },
+    "method": {
+      "default": "overload",
+      "description": "Costing method when using ISIS protocol, for other use none",
+      "type": "string",
+      "enum": ["overload", "maxLinkMetric", "none"],
+      "examples": ["overload", "maxLinkMetric"],
+      "usage": "The chosen method to perform cost operation of IGP"
+    },
+    "proc_id": {
+      "default": "all",
+      "description": "OSPF/ISIS process id on which cost operation needs to be performed",
+      "type": "string",
+      "examples": ["test", "0"],
+      "usage": "Process id of the protocol under which the costing operation should be performed."
+    },
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "collection_type": {
+      "default": "telemetry",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["telemetry", "snmp"],
+      "examples": ["telemetry", "snmp"]
+    },
+    "vrf": {
+      "default": "default",
+      "description": "VRF on which cost operation needs to be performed, when using ospf protocol",
+      "type": "string",
+      "examples": ["default"],
+      "usage": "VRF id on which the costing operation should be performed"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["cost_threshold_percent", "cost_protocol"],
+  "type": "object"
+}

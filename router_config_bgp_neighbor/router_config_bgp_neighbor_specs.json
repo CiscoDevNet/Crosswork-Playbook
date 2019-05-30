@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_bgp_neighbor/specs",
+  "title": "Router config BGP Neighbor",
+  "properties": {
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "remote_as": {
+      "description": "Remote AS for the neighbor to be added",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["1000"],
+      "usage": "Then name of the remote AS for which neighbor is to be added."
+    },
+    "password_encrypted": {
+      "description": "Password in the input is encrypted or plain text",
+      "type": "boolean",
+      "default": false,
+      "enum": [true, false],
+      "examples": [true, false],
+      "usage": "Specify whether the password is encrypted."
+    },
+    "password_string": {
+      "description": "Password value to be added",
+      "type": "string",
+      "examples": ["cisco"],
+      "usage": "Set a password for enabling authentication between the two neighbors. It can be a plain string or encrypted."
+    },
+    "update_source": {
+      "description": "Update source interface to be added",
+      "type": "string",
+      "examples": ["Loopback0"],
+      "usage": "The interface specified in this parameter is used for establishing TCP connection."
+    },
+    "address_family": {
+      "description": "Address Family to be added in neighbor",
+      "type": "string",
+      "enum": ["ipv4", "ipv6", "vpnv4", "vpnv6"],
+      "examples": ["ipv4", "ipv6", "vpnv4", "vpnv6"],
+      "usage": "Specify the address family. Available options are \"ipv4\", \"ipv6\", \"vpnv4\" and \"vpnv6\"."
+    },
+    "unicast_routepolicy": {
+      "description": "list of Route Policy to be added in the Neighbor. A map of name and direction of route policy",
+      "additionalItems": true,
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "description": "Name of the route Policy to be added in the Neighbor",
+            "type": "string",
+            "minLength": 1,
+            "examples": ["routepolicy1"]
+          },
+          "direction": {
+            "description": "Direction of the route Policy to be added in the Neighbor",
+            "type": "string",
+            "minLength": 1,
+            "examples": ["in", "out"]
+          }
+        },
+        "required": ["name", "direction"],
+        "uniqueItems": true
+      },
+      "minItems": 0,
+      "type": "array",
+      "examples": [[{"name":"VRF-IME-N7k-IPv4-OUT","direction":"out"}, {"name":"VRF-IME-N7k-IPv4-IN","direction":"in"}]],
+      "usage": "The route policies specified in this parameter is added under the bgp neighbor."
+    },
+    "bgp_id": {
+      "description": "BGP instance under which neighbor has to be added",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["1"],
+      "usage": "BGP neighbor will be added to the bgp instance specified using this parameter."
+    },
+    "neighbor_id": {
+      "description": "Neighbor ID for the new neighbor to be created",
+      "type": "string",
+      "minLength": 1,
+      "examples": ["20.20.20.20"],
+      "usage": "The IP address of the neighbor which is being added."
+    },
+    "use_neighbor_group": {
+      "description": "Neighbor group for the new neighbor to be created",
+      "type": "string",
+      "examples": ["sampleGroup"],
+      "usage": "The neighbor will be part of the peer group name specified in this param."
+    },
+    "collection_type": {
+      "default": "snmp",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["snmp"],
+      "examples": ["snmp"]
+    },
+    "description": {
+      "description": "Description for the new neighbor to be created",
+      "type": "string",
+      "examples": ["sample_description"],
+      "usage": "Description of the neighbor to be added."
+    },
+    "vrf": {
+      "description": "Vrf name under which new neighbor is to be created",
+      "type": "string",
+      "examples": ["green"],
+      "usage": "Name of vrf under which neighbor is to be added. If the vrf is not given then the neighbor is added under BGP"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["provider", "bgp_id", "neighbor_id", "remote_as", "address_family"],
+  "type": "object"
+}

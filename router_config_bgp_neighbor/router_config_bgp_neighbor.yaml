@@ -1,0 +1,77 @@
+---
+# Playbook to create the bgp neighbor on a router
+# Revanth Nayanavari (rnayanav@cisco.com)
+# 21/11/2017
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Create bgp neighbor on a router"
+# "description": "Create bgp neighbor on a router"
+# "pb_params_sample_file_name": "router_config_bgp_neighbor_params.json"
+# "pb_params_spec_file_name": "router_config_bgp_neighbor_specs.json"
+# "prerequisites": "The peer router should be configured with BGP neighbour"
+# "long_description":"This playbook creates a BGP neighbor on a router and verifies if the neighbour status is ‘ESTABLISHED’"
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+
+- name: Create bgp neighbor on a router
+  hosts: "{{ hosts }}"
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - check_mode: "{{ check_mode }}"
+    - unique_id: "on a router"
+
+  roles:
+    - { role: router_config_bgp_neighbor, tags: ["maintenance"] }
+
+- name: Pause
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - pause_time: 120
+    - pause_reason: "BGP state to stabilize"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - {role: op_pause, tags: ["maintenance"]}
+
+- name: Check BGP neighbor state for router
+  hosts: "{{ hosts }}"
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - vrf_name: "{{ vrf }}"
+    - neighbor_ip: "{{ neighbor_id if vrf_name != '' else result['address_tmp'] }}"
+    - unique_id: "on router"
+    - check_mode: "{{ check_mode }}"
+    - check: "bgp_neighbor_state"
+
+  roles:
+    - { role: "{{ 'router_check_vrf_neighbor_state' if vrf_name != '' else 'router_check' }}", tags: ["maintenance"] }
+
+...

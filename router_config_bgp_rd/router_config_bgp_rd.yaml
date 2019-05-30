@@ -1,0 +1,49 @@
+---
+# Playbook to add/remove RD on a vrf of bgp on the designated router
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Add/remove RD under BGP VRF on a router"
+# "description": "Add/remove RD under BGP VRF on a router"
+# "pb_params_sample_file_name": "router_config_bgp_rd_params.json"
+# "pb_params_spec_file_name": "router_config_bgp_rd_specs.json"
+# "prerequisites": "The VRF should be initialized under BGP. If not, the playbook fails"
+# "long_description":"This playbook creates/deletes a Route Distinguisher (RD) under BGP VRF on a router."
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Add/remove RD under BGP VRF on a router
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - bgp_id: "{{ bgp_id }}"
+    - vrf_name: "{{ vrf_name }}"
+    - route_distinguisher: "{{ route_distinguisher }}"
+    - operation: "{{ operation }}"
+  roles:
+    - { role: router_config_bgp_rd, tags: ["maintenance"]}
+
+...

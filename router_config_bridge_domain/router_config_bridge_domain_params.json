@@ -1,0 +1,7 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"operation": "create",
+	"bridge_domain_list": ["13","21"],
+	"execution_id": "1",
+	"mop_id": "1"
+}

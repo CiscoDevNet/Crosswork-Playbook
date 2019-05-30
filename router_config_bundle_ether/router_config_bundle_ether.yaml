@@ -1,0 +1,119 @@
+---
+# Playbook to create a bundle-ether and add interface to it on the designated router pair
+# Venkatesh G(veg2@cisco.com)
+# 10/06/2017
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Create Bundle Ether and add interface"
+# "description": "Create a Bundle Ether and add interface to the bundle on 2 routers"
+# "pb_params_sample_file_name": "router_config_bundle_ether_params.json"
+# "pb_params_spec_file_name": "router_config_bundle_ether_specs.json"
+# "prerequisites": "The interface(s) being added to the bundle should not have any IP configuration."
+# "long_description": "This playbook creates a bundle ether pair on the given routers. It adds one or more interfaces to the bundle and verifies if the capacity of the bundle on the first router is greater than or equal to the reference bandwidth given by the user."
+# "sw_platform": "IOS XR"
+# "min_nodes": 2
+# "max_nodes": 2
+#@header_end
+
+#########################################################
+# Continuous pre-checks
+#########################################################
+#TO DO: continuous checks to be supported with snmp
+#- include: router_cont_pre_checks.yml
+
+#########################################################
+# Maintenance phase
+#########################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Create a Bundle-Ether on router1
+  hosts: "{{ rtr1_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on router1"
+    - bundle_id: "{{ rtr1_bundle_id }}"
+    - bundle_ipv4_address: "{{ rtr1_bundle_ipv4_address }}"
+    - bundle_ipv4_mask: "{{ rtr1_bundle_ipv4_mask }}"
+    - bundle_ipv6_addresses: "{{ rtr1_bundle_ipv6_addresses }}"
+  roles:
+    - { role: router_config_bundle_ether,  tags: ["maintenance"] }
+
+- name: Add interface(s) to Bundle-Ether on router1
+  hosts: "{{ rtr1_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on router1"
+    - bundle_id: "{{ rtr1_bundle_id }}"
+    - interfaces: "{{ rtr1_interfaces }}"
+    - operation: "add"
+  roles:
+    - { role: router_config_modify_interface_bundle_ether,  tags: ["maintenance"] }
+
+
+- name: Create a Bundle-Ether on router2
+  hosts: "{{ rtr2_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on router2"
+    - bundle_id: "{{ rtr2_bundle_id }}"
+    - bundle_ipv4_address: "{{ rtr2_bundle_ipv4_address }}"
+    - bundle_ipv4_mask: "{{ rtr2_bundle_ipv4_mask }}"
+    - bundle_ipv6_addresses: "{{ rtr2_bundle_ipv6_addresses }}"
+  roles:
+    - { role: router_config_bundle_ether,  tags: ["maintenance"] }
+
+- name: Add interface(s) to Bundle-Ether on router2
+  hosts: "{{ rtr2_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on router2"
+    - bundle_id: "{{ rtr2_bundle_id }}"
+    - interfaces: "{{ rtr2_interfaces }}"
+    - operation: "add"
+  roles:
+    - { role: router_config_modify_interface_bundle_ether,  tags: ["maintenance"] }
+
+- name: Verify Bundle-Ether capacity
+  hosts: "{{ rtr1_host }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ rtr1_host }}"
+    - if_name: "Bundle-Ether{{ rtr1_bundle_id }}"
+    - unique_id: "on router1"
+    - check: "interface_bw"
+  roles:
+    - { role: router_check,  tags: ["maintenance"] }
+
+...

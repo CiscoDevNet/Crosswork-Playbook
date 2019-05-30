@@ -1,0 +1,54 @@
+---
+# Playbook to toggle the admin state up/down of an interface on a router
+# Krishna Somala (skreddy@cisco.com)
+# 04/19/2016
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Interface State change"
+# "description": "Change line card interface(s) state to up/down"
+# "pb_params_sample_file_name": "router_op_interface_params.json"
+# "pb_params_spec_file_name": "router_op_interface_specs.json"
+# "long_description" : "This playbook is used to change the admin state of one or more interfaces of a router"
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+#########################################################
+# Continuous pre-checks
+#########################################################
+
+- include: router_cont_pre_checks.yml
+
+#########################################################
+# Maintenance
+#########################################################
+
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+
+- name: Change the admin_state of an interface
+  hosts: "{{ hosts }}"
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_interface, tags: ["maintenance"] }
+
+...

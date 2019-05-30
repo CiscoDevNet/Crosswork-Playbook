@@ -1,0 +1,26 @@
+{
+  "if_names": [
+    "GigabitEthernet0/0/0/0",
+    "GigabitEthernet0/0/0/1",
+    "GigabitEthernet0/0/0/2"
+  ],
+  "packages": [],
+  "optimize": false,
+  "region": "NODES",
+  "repository": {
+    "dlm_credential_profile": "Default CSM package repository",
+    "type": "SCP",
+    "address": "192.168.123.101",
+    "source": "/mnt/robot_datafs/robot-nca/pkg_repo",
+    "destination": "harddisk:",
+    "vrf": ""
+  },
+  "cost_method": "overload",
+  "cost_threshold_percent": 0.4,
+  "provider": "Netconf",
+  "cost_proc_id": "all",
+  "cost_vrf": "default",
+  "cost_protocol": "isis",
+  "collection_type": "telemetry",
+  "mop_timeout": "1h"
+}

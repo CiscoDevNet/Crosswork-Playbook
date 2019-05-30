@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_vrf/specs",
+  "title": "Router config VRF",
+  "properties": {
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "vrf_name": {
+      "description": "Name of the VRF",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+			"examples": ["GREEN"]
+    },
+    "operation": {
+      "description": "Operation to be performed with the given VRF",
+      "type": "string",
+      "default": "create",
+      "enum": ["create", "update", "delete"],
+      "examples": ["create", "update", "delete"]
+    },
+    "vrf_addressfamily": {
+      "description": "VRF address family configurations.Subsequent configurations will be skipped if af_type is not provided",
+      "type": "object",
+      "properties": {
+        "af_type": {
+          "description": "type of address family to be configured",
+          "type": "string",
+          "enum": ["ipv4", "ipv6",""],
+          "examples": ["ipv4"]
+        },
+        "sub_af": {
+          "description": "sub address family to be configured. Only unicast option is available. Has no effect if af_type is not provided",
+          "type": "string",
+          "enum": ["unicast"],
+          "examples": ["unicast"]
+        },
+        "maximum_prefix": {
+          "description": "Maximum table's prefix limit for the address family",
+          "type": "integer",
+          "minimum": 32,
+          "maximum": 5000000,
+          "examples": [100]
+        },
+        "vrf_import": {
+          "description": "vrf import cofigurations",
+          "type": "object",
+          "properties": {
+            "route_target": {
+              "description": "list of route targets to import",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "examples": [ "100:1000" ]
+            },
+            "rt_action": {
+              "description": "specify if the Rt list is merged or replaced.Has no effect if the VRF is new or route_target is not specified",
+              "type": "string",
+              "enum": ["merge", "replace"],
+              "examples": ["merge"]
+            },
+            "route_policy": {
+              "description": "route policy to use for imported routes to this vrf",
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "examples": ["Routepolicy1"]
+            },
+            "from_defaultvrf_route_policy": {
+              "description": "route policy to use for imported routes from default vrf to this vrf",
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "examples": ["Routepolicy2"]
+            }
+          }
+        },
+        "vrf_export": {
+          "description": "vrf export cofigurations",
+          "properties": {
+            "route_target": {
+              "description": "list of route targets to export",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "examples": ["100:1000"]
+            },
+            "rt_action": {
+              "description": "specify if the Rt list is merged or replaced.Has no effect if the VRF is new or route_target is not specified",
+              "type": "string",
+              "enum": ["merge", "replace"],
+              "examples": ["merge"]
+            },
+            "route_policy": {
+              "description": "route policy to use for exported routes from this vrf",
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "examples": ["Routepolicy1"]
+            },
+            "to_defaultvrf_route_policy": {
+              "description": "route policy to use for exported routes to default vrf from this vrf",
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "examples": ["Routepolicy3"]
+            }
+          }
+        }
+      },
+      "default": {
+        "af_type": "ipv4",
+        "sub_af": "unicast",
+        "maximum_prefix": 32,
+        "vrf_import": {
+          "route_target": [],
+          "rt_action": "merge",
+          "route_policy": "",
+          "from_defaultvrf_route_policy": ""
+        },
+        "vrf_export": {
+          "route_target": [],
+          "rt_action": "merge",
+          "route_policy": "",
+          "to_defaultvrf_route_policy": ""
+        }
+      }
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["vrf_name", "operation", "vrf_addressfamily"],
+  "type": "object"
+}

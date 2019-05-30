@@ -1,0 +1,43 @@
+---
+# Playbook to create the ospf areas on a router
+# Revanth Nayanavari (rnayanav@cisco.com)
+# 28/06/2017
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Create an ospf area on a router"
+# "description": "Create an ospf area on a router.  Add interface(s) to the area."
+# "pb_params_sample_file_name": "router_config_ospf_area_params.json"
+# "pb_params_spec_file_name": "router_config_ospf_area_specs.json"
+# "prerequisites": "The playbook expects the process id and the vrf id (in case of area to be created for VRF) provided in the input parameters to be already configured on the router. If these are not configured, the playbook fails"
+# "long_description":"This playbook creates an OSPF area on the router. Supported OSPF variants are OSPF and OSPFv3. Depending on the parameters chosen, the area is created under an OSPF process or a VRF."
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Create an ospf area on a router
+  hosts: "{{ hosts }}"
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_config_ospf_area, tags: ["maintenance"] }
+
+...

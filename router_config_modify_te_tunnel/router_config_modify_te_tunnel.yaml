@@ -1,0 +1,51 @@
+---
+# Playbook to modify parameters of an existing TE tunnel between designated routers
+# 10/04/2016
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Modify TE Tunnel Configuration"
+# "description": "Modify an existing TE Tunnel Configuration.  Parameters like setup priority, hold priority etc are supported."
+# "pb_params_sample_file_name": "router_config_modify_te_tunnel_params.json"
+# "pb_params_spec_file_name": "router_config_modify_te_tunnel_specs.json"
+# "prerequisites": "The playbook expects a tunnel with the tunnel id provided in the input parameters to be already configured on the router."
+# "long_description":"This playbook helps modifying an existing TE tunnel's configuration parameters."
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Modify a TE Tunnel endpoint on a router
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - tunnel_id: "{{ tunnel_id }}"
+    - setup_priority: "{{ setup_priority }}"
+    - hold_priority: "{{ hold_priority }}"
+    - bandwidth: "{{ bandwidth }}"
+    - fast_reroute: "{{ fast_reroute }}"
+
+  roles:
+    - { role: router_config_modify_te_tunnel, tags: ["maintenance"] }
+
+
+...

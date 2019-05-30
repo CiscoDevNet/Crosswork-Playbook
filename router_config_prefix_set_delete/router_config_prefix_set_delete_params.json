@@ -1,0 +1,5 @@
+{
+    "check_mode": "no",
+    "prefix_set_name": "INTERNET",
+    "prefix_set_list": []
+}

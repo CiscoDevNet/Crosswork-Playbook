@@ -1,0 +1,22 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"provider": "Nso",
+	"execution_id": "1",
+	"mop_id": "1",
+	"bgp_id": "1",
+	"description": "sample",
+	"remote_as": "1000",
+	"password_string": "",
+	"update_source": "",
+	"password_encrypted": false,
+	"address_family": "ipv4",
+	"collection_type": "snmp",
+	"vrf": "",
+	"unicast_routepolicy": [
+		{"name":"VRF-IME-N7k-IPv4-OUT","direction":"out"},
+		{"name":"VRF-IME-N7k-IPv4-IN","direction":"in"}
+	],
+	"use_neighbor_group": "sampleGroup",
+	"neighbor_id": "20.20.20.20",
+	"check_mode": "no"
+}

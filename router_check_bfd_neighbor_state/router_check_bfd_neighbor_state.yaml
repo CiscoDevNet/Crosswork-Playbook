@@ -1,0 +1,45 @@
+---
+# Ansible playbook to perform bfd neighbor state check
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Check state of given bfd neighbor"
+# "description": "Check state of given bfd neighbor"
+# "pb_params_sample_file_name": "router_check_bfd_neighbor_state_params.json"
+# "pb_params_spec_file_name": "router_check_bfd_neighbor_state_specs.json"
+# "long_description": "This playbook is to check the state of the given BFD neighbors using 'show bfd neighbors interface' command and verify whether all the given BFD neighbors are UP"
+# "sw_platform": "IOS XE,IOS" 
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Verify Bfd neighbor state on given router
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - bfd_neighbors: "{{ bfd_neighbors }}"
+    - unique_id: "on router1"
+  roles:
+    - { role: router_check_bfd_neighbor_state,  tags: ["maintenance"] }

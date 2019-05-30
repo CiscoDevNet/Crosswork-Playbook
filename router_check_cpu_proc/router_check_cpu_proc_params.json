@@ -1,0 +1,6 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"cpu_threshold_percentage": 10,
+	"execution_id": "1",
+	"mop_id": "1"
+}

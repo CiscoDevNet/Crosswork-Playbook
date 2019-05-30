@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "robot/morph/v1/playbooks/router_check_ipv4_interface_address/specs",
+  "properties": {
+    "if_name": {
+      "minLength": 1,
+      "description": "Router Interface which need to be checked",
+      "type": "string",
+      "examples":["GigabitEthernet0/0/0"],
+      "usage": "Interface name to be checked"
+    },
+    "ip_address": {
+      "minLength": 1,
+      "description": "Expected IPv4 address of the Interface",
+      "type": "string",
+      "examples":["192.168.1.10"],
+      "usage": "IPv4 address to be checked"
+    },
+    "collection_type": {
+      "default": "snmp",
+      "description": "Collection type to be used for data collection",
+      "type": "string",
+      "enum": ["snmp"],
+      "examples": ["snmp"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["if_name", "ip_address"],
+  "type": "object"
+}

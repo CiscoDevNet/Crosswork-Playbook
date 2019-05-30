@@ -1,0 +1,14 @@
+{
+	"rtr1_host": "RouterFremont",
+	"rtr2_host": "RouterMilpitas",
+	"provider": "Nso",
+	"rtr1_interfaces": ["GigabitEthernet0/0/0/3"],
+	"rtr2_interfaces": ["GigabitEthernet0/0/0/4"],
+	"rtr1_bundle_id": 1,
+	"rtr2_bundle_id": 1,
+	"bw": 2000000,
+	"cost_protocol": "isis",
+	"cost_threshold_percent": 0.4,
+    "collection_type": "telemetry",
+    "mop_timeout": "1h"
+}

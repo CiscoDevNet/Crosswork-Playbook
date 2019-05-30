@@ -1,0 +1,49 @@
+---
+# Ansible playbook to run arbitrary show command(s) on IOS XR/XE device(s).
+# cw-nca-infra (cw-nca-infra@cisco.com)
+# 12/20/2018
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Run arbitrary show command(s) on IOS XR/XE device(s)"
+# "description": "Run arbitrary show command(s) on IOS XR/XE device(s) using ssh."
+# "pb_params_sample_file_name": "router_op_show_params.json"
+# "pb_params_spec_file_name": "router_op_show_specs.json"
+# "prerequisites": "The storage provider details should be added in Crosswork"
+# "long_description": "This playbook is to execute a list of show commands and save the output as a tar file at the user specified location"
+# "sw_platform": "IOS XR,IOS XE,IOS"
+# "min_nodes": 1
+# "max_nodes": 10
+#@header_end
+
+#########################################################
+# Maintenance
+#########################################################
+- name: Grab the DLM node lock(s) on the specified device(s)
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Execute the show command(s) on the specified device(s)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - show_commands: "{{ show_commands }}"
+    - dlm_storage_provider: "{{ dlm_storage_provider }}"
+
+  roles:
+    - { role: router_op_show, tags: ["maintenance"] }
+
+...

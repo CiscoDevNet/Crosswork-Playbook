@@ -1,0 +1,43 @@
+---
+# Playbook to configure ISIS on the designated router
+
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Configure ISIS on the designated router"
+# "description": "Configure ISIS on the designated router"
+# "pb_params_sample_file_name": "router_config_isis_params.json"
+# "pb_params_spec_file_name": "router_config_isis_specs.json"
+# "long_description": "This playbook configures the ISIS on a given router. This playbook takes the complete config as an input in the form of dictionary and configures it in the router."
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Configure ISIS on the designated router
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on a router"
+  roles:
+    - { role: router_config_isis, tags: ["maintenance"] }
+...

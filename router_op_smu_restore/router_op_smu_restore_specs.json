@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_op_smu_restore/specs",
+  "title": "Router op SMU Restore",
+  "properties": {
+    "packages": {
+      "default": [],
+      "additionalItems": true,
+      "items": {
+        "description": "JSON List of SMU package names to be uninstalled from the router, or a tar containing SMU packages",
+        "type": "string",
+        "minLength":1
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true,
+      "examples": ["xrv9k-iosxr-infra-4.0.0.5-r612.CSCva15023"],
+      "usage": "These are the names of the packages (as seen on the router) to be uninstalled"
+    },
+    "region": {
+      "default": "NODES",
+      "description": "Default region which tracks the location of a node.",
+      "type": "string"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["packages"],
+  "type": "object"
+}

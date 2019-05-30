@@ -1,0 +1,37 @@
+---
+# Ansible playbook to perform basic accessibility checks to a router
+
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Check accessibility to router"
+# "description": "Check ip accessibility and netconf accessibility to a router"
+# "pb_params_sample_file_name": "router_check_accessibility_params.json"
+# "pb_params_spec_file_name": "router_check_accessibility_specs.json"
+# "long_description": "This playbook tests for connectivity between Crosswork and the given device using ping and NETCONF."
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+- name: Check IP connectivity to router
+  hosts: "{{ hosts }}"
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+
+  roles:
+    - { role: router_check_ip_connectivity, tags: ["maintenance"] }
+
+- name: Check NETCONF connectivity to router
+  hosts: "{{ hosts }}"
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+
+  roles:
+    - { role: router_check_netconf_connectivity, tags: ["maintenance"] }
+...

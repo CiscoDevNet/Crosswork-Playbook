@@ -1,0 +1,10 @@
+{
+	"hosts": "RouterSFO",
+	"execution_id": "1",
+	"mop_id": "1",
+	"provider": "Nso",
+	"rp_name": "rp_net1",
+	"rp_string": "pass",
+	"operation_route_policy": "add",
+	"check_mode": "no"
+}

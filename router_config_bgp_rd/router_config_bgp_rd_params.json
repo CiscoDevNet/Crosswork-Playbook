@@ -1,0 +1,8 @@
+{
+	"bgp_id": "7922",
+	"route_distinguisher": "65010:0",
+	"vrf_name": "green",
+	"operation": "add",
+    "provider": "Nso",
+    "mop_timeout": "1h"
+}

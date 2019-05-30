@@ -1,0 +1,15 @@
+{
+	"hosts": "RouterSanFrancisco",
+	"provider": "Netconf",
+	"execution_id": "1",
+	"mop_id": "1",
+	"proc_id": "1",
+	"interfaces": [
+		{"name":"GigabitEthernet0/0/0/5","cost":50},
+		{"name":"GigabitEthernet0/0/0/6","cost":50}
+	],
+	"vrf": "default",
+	"igp": "ospf",
+	"area_id": "20",
+	"check_mode": "no"
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "id": "crosswork/nca/v1/playbooks/router_config_prefix_set_delete/specs",
+  "title": "Router config Prefix Set Delete",
+  "properties": {
+    "provider": {
+      "default": "Nso",
+      "description": "Provider to be used to connect to the router",
+      "type": "string",
+      "enum": ["Nso"]
+    },
+    "prefix_set_name": {
+      "description": "Name of the prefix_set",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "examples": ["prefix1"]
+    },
+    "prefix_set_list": {
+      "description": "List of prefixes to be deleted from the set",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "uniqueItems": true,
+      "minItems": 0,
+      "examples": ["49.40.24.0/24",  "50.50.0.0/16"]
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["prefix_set_name", "prefix_set_list"],
+  "type": "object"
+}

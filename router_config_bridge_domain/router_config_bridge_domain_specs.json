@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "robot/morph/v1/playbooks/router_config_bridge_domain/specs",
+  "properties": {
+    "bridge_domain_list": {
+      "description": "List of bridge domains to be configured or removed ",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+       },
+      "type": "array",
+      "uniqueItems": true,
+      "examples": ["13","21"],
+      "usage": "List of bridge domain IDs to be created or deleted"
+    },
+    "operation": {
+      "default": "create",
+      "description": "operation to be performed, create or delete",
+      "type": "string",
+      "enum": ["create", "delete"],
+      "examples": ["create, delete"],
+      "usage": "The operation to be performed"
+    },
+    "mop_timeout": {
+      "default": "1h",
+      "description": "Timeout duration for MoP i.e. maximum time spent in Running/Paused states. e.g. 900s, 10m, 1.5h, etc. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'.",
+      "type": "string"
+    }
+  },
+  "required": ["bridge_domain_list"],
+  "type": "object"
+}

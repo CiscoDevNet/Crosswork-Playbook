@@ -1,0 +1,47 @@
+---
+# Playbook to configure route policy on a designated router
+#
+#@header_start
+# "mop_version": "1.0.0"
+# "name": "Add/remove route policy "
+# "description": "Add/remove route policy on a router"
+# "pb_params_sample_file_name": "router_config_route_policy_params.json"
+# "pb_params_spec_file_name": "router_config_route_policy_specs.json"
+# "long_description": "This playbook is to add or remove a route policy."
+# "sw_platform": "IOS XR"
+# "min_nodes": 1
+# "max_nodes": 1
+#@header_end
+
+
+##############################################################################
+# Maintenance phase
+##############################################################################
+
+- name: Perform Lock on the devices
+  hosts: localhost
+  any_errors_fatal: true
+  connection: local
+  gather_facts: no
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - router_name: "{{ hosts }}"
+    - check_mode: "{{ check_mode }}"
+
+  roles:
+    - { role: router_op_dlm_node_lock, tags: ["maintenance"] }
+
+- name: Add/remove route policy
+  hosts: "{{ hosts }}"
+  connection: local
+  gather_facts: no
+  any_errors_fatal: true
+  vars:
+    - router_ip: "{{ inventory_hostname }}"
+    - unique_id: "on a router"
+    - operation: "{{ operation_route_policy }}"
+
+  roles:
+      - { role: router_config_route_policy, tags: ["maintenance"] }
+
+...
